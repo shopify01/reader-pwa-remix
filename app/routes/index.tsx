@@ -1,5 +1,6 @@
 import BookImage from "~/../assets/book.jpg";
 import Loader from "~/components/loader";
+
 export default function Index() {
   return (
     <main

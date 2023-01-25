@@ -1,14 +1,11 @@
 interface loaderProps {
-  className?: string;
+  width?: string;
+  height?: string;
 }
-const Loader = ({ className }: loaderProps) => {
+const Loader = ({ width = "w-24", height = "h-24" }: loaderProps) => {
   return (
     <div
-      className={
-        className
-          ? className
-          : "inline-block h-24 w-24 animate-spin rounded-full border-t-8  border-t-orange-default"
-      }
+      className={`inline-block ${width} ${height} animate-spin rounded-full border-t-8  border-t-orange-default`}
     ></div>
   );
 };

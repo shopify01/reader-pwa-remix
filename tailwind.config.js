@@ -39,6 +39,8 @@ module.exports = {
       },
       orange: {
         default: "#fca72cc4",
+        dark: "#fb9404",
+        light: "#ffedcc",
       },
     },
     extend: {},
