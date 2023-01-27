@@ -82,5 +82,19 @@ export function useUser(): User {
 }
 
 export function validateEmail(email: unknown): email is string {
-  return typeof email === "string" && email.length > 3 && email.includes("@");
+  return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+export function validateUser(user: unknown): user is string {
+  return (
+    typeof user === "string" &&
+    /^(?=.{4,20}$)(?:[a-zA-Z\d]+(?:(?:\.|-|_)[a-zA-Z\d])*)+$/.test(user)
+  );
+}
+
+export function validateEmailUser(user: unknown): user is string {
+  return (
+    typeof user === "string" &&
+    (/^(?=.{4,20}$)(?:[a-zA-Z\d]+(?:(?:\.|-|_)[a-zA-Z\d])*)+$/.test(user) ||
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user))
+  );
 }

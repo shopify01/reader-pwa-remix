@@ -2,7 +2,7 @@ import type { ReactElement, MouseEvent } from "react";
 
 interface buttonProps {
   label: string | ReactElement;
-  handleClick: (e: MouseEvent) => void;
+  handleClick?: (e: MouseEvent) => void;
   type?: "button" | "submit" | "reset" | undefined;
   disabled?: boolean;
   maxWidth?: string;
@@ -12,7 +12,7 @@ interface buttonProps {
   fontSize?: string;
 }
 const Button = ({
-  handleClick,
+  handleClick = () => {},
   label,
   disabled = false,
   type = "button",

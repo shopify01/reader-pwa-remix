@@ -17,10 +17,10 @@ export default function Index() {
       <img
         src={welcomeImage}
         alt="Sonic Youth On Stage"
-        class="bg-gradient-to-b-rgb-245-246-252-0-52-rgb-117-19-93-0-73 max-h-[400px] w-full h-[350px] object-fill"
+        className="bg-gradient-to-b-rgb-245-246-252-0-52-rgb-117-19-93-0-73 h-[350px] max-h-[400px] w-full object-fill"
       />
       <p className="mt-2 text-2xl font-medium">
-        Welcome to <span className="text-orange-default">Erabook &#128075;</span>
+        Welcome to <span className="text-orange-default">Erabook &#9995;</span>
       </p>
       <p className="max-w-xs text-center text-base font-light">
         The Number One Ebook Store & Reader Application in this Century.
