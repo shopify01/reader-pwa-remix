@@ -19,8 +19,7 @@ const Input = ({
   width,
 }: inputProps) => {
   return (
-    <div className="flex justify-center">
-      <div>
+    <div>
         <label className="text-gray">{label}</label>
         <div className="form-floating mb-3 xl:w-96">
           <input
@@ -33,7 +32,6 @@ const Input = ({
             onChange={onChange}
           />
         </div>
-      </div>
     </div>
   );
 };

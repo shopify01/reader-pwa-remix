@@ -6,8 +6,7 @@ interface checkboxProps {
 }
 const Checkbox = ({ label, value, className }: checkboxProps) => {
   return (
-    <div className="flex">
-      <div className="form-check">
+      <div className="form-check items-center display-inherit">
         <input
           id="bordered-checkbox-1"
           type="checkbox"
@@ -18,7 +17,6 @@ const Checkbox = ({ label, value, className }: checkboxProps) => {
           {label}
         </label>
       </div>
-    </div>
   );
 };
 

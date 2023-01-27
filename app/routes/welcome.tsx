@@ -1,7 +1,7 @@
 import { useNavigate } from "@remix-run/react";
 import welcomeImage from "~/../assets/ebook_Welcome.jpg";
 import GoogleImage from "~/../assets/google.svg";
-import Button from "~/components/buton";
+import Button from "~/components/button";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -17,13 +17,13 @@ export default function Index() {
       <img
         src={welcomeImage}
         alt="Sonic Youth On Stage"
-        className="max-h-[400px] w-full  rounded-lg object-fill"
+        class="bg-gradient-to-b-rgb-245-246-252-0-52-rgb-117-19-93-0-73 max-h-[400px] w-full h-[350px] object-fill"
       />
       <p className="mt-2 text-2xl font-medium">
-        Welcome to <span className="text-orange-default">Erabook</span>
+        Welcome to <span className="text-orange-default">Erabook &#128075;</span>
       </p>
       <p className="max-w-xs text-center text-base font-light">
-        The Number One Ebook Store & Reader Application in this century.
+        The Number One Ebook Store & Reader Application in this Century.
       </p>
       <div className="mt-3 flex w-full max-w-[300px] flex-col gap-2">
         <Button

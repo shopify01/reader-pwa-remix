@@ -1,4 +1,4 @@
-interface dateProps {
+interface selectProps {
   handleChange: () => void;
   name: string;
   data: string;
@@ -17,7 +17,7 @@ const Select = ({
   handleChange,
   placeholder,
   width,
-}: dateProps) => {
+}: selectProps) => {
   return (
     <div >
       <label className="text-black-default">{label}</label>
