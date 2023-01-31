@@ -6,10 +6,9 @@ import { validateEmailUser } from "~/utils";
 import Checkbox from "~/components/checkbox";
 import Input from "~/components/input";
 import Button from "~/components/button";
-import fbImage from "~/../assets/facebook.svg";
-import appleImage from "~/../assets/apple.svg";
-import googleImage from "~/../assets/google.svg";
 import BackButton from "~/components/backButton";
+import { BsApple, BsFacebook } from "react-icons/bs";
+import { FcGoogle } from "react-icons/fc";
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
@@ -34,6 +33,7 @@ export async function action({ request }: ActionArgs) {
       { status: 400 }
     );
   }
+
   return null;
 }
 
@@ -118,11 +118,7 @@ export default function LoginPage() {
                 borderColor="border-black-light border-opacity-20"
                 label={
                   <span className="flex flex-wrap justify-center gap-1 align-middle">
-                    <img
-                      src={googleImage}
-                      alt={"google_Image"}
-                      className={"h-auto w-[2rem]"}
-                    />
+                    <FcGoogle size={40} />
                   </span>
                 }
               />
@@ -131,11 +127,7 @@ export default function LoginPage() {
                 borderColor="border-black-light border-opacity-20"
                 label={
                   <span className="flex flex-wrap justify-center gap-1 align-middle">
-                    <img
-                      src={appleImage}
-                      alt={"Apple_Image"}
-                      className={"h-auto w-[2em]"}
-                    />
+                    <BsApple size={40} className={"text-black-default"} />
                   </span>
                 }
               />
@@ -144,11 +136,7 @@ export default function LoginPage() {
                 borderColor="border-black-light border-opacity-20"
                 label={
                   <span className="flex flex-wrap justify-center gap-1 align-middle">
-                    <img
-                      src={fbImage}
-                      alt={"facebook_Image"}
-                      className={"h-auto w-[2rem]"}
-                    />
+                    <BsFacebook size={40} className={"text-blue-default"} />
                   </span>
                 }
               />

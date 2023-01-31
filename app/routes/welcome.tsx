@@ -1,6 +1,6 @@
 import { useNavigate } from "@remix-run/react";
 import welcomeImage from "~/../assets/ebook_Welcome.jpg";
-import GoogleImage from "~/../assets/google.svg";
+import { FcGoogle } from "react-icons/fc";
 import Button from "~/components/button";
 
 export default function Index() {
@@ -32,11 +32,7 @@ export default function Index() {
           textColor={"text-black-default"}
           label={
             <span className="flex flex-wrap justify-center gap-1 align-middle">
-              <img
-                src={GoogleImage}
-                alt={"google_Image"}
-                className={"h-auto w-[1rem]"}
-              />
+              <FcGoogle size={20} />
               <p> Continue with Google</p>
             </span>
           }

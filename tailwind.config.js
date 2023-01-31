@@ -45,6 +45,9 @@ module.exports = {
       red: {
         default: "#ff3333",
       },
+      blue: {
+        default: "#3333ff",
+      },
     },
     extend: {},
   },
