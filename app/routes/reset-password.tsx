@@ -78,10 +78,10 @@ export default function ResetPasswordPage() {
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <div className="max-w-[20rem]">
           <p className="text-semibold mb-2 text-center text-xl text-orange-dark">
-            Reset PassWord <p>SuccessFul!</p>
+            Reset PassWord <p>Successful!</p>
           </p>
           <p className="mb-4 text-center text-base font-thin">
-            Your Password has been SuccessFully changed.
+            Your password has been successfully changed.
           </p>
           <Button
             label="Go to Home"
@@ -114,7 +114,7 @@ export default function ResetPasswordPage() {
                 />
               );
             })}
-            <div className="py-4">
+            <div className="py-4 mb-40">
               <Checkbox label="Remember me" />
             </div>
             <Button

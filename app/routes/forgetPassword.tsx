@@ -57,12 +57,14 @@ export default function ForgetPasswordPage() {
               error={actionData?.errors?.["email"] || ""}
               onChange={handleChange}
             />
+            <div className="mt-40">
             <Button
               label="Continue"
               maxWidth="max-w-full"
               fontSize="text-base"
               type="submit"
             />
+            </div>
           </Form>
         </div>
       </div>
