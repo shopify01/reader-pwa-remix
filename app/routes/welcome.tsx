@@ -40,7 +40,7 @@ export default function Index() {
         />
         <Button
           label={"Get Started"}
-          handleClick={() => handleClick("signUp")}
+          handleClick={() => handleClick("complete-profile")}
         />
         <Button
           label={"I Already Have an Account"}

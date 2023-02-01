@@ -5,7 +5,7 @@ interface BackButtonProps {
 }
 const BackButton = ({ url }: BackButtonProps) => {
   return (
-    <div className="m-4 w-full max-w-[2rem]">
+    <div className="m-4 w-full max-w-[2rem] ">
       <Link to={`${url}`}>
         <BiArrowBack size={24} />
       </Link>

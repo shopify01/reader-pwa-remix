@@ -31,8 +31,23 @@ export default function StepTwo() {
 
   return (
     <>
-      <div className="mt-6 mb-10">
+      <div className="mt-6 mb-10 flex items-center">
         <BackButton url={"/welcome"} />
+        <div className="m-4 w-full md:flex justify-center ">
+          <div className="ml-8 h-3 w-[50%] max-w-[50%] rounded-full border-[0px] bg-grey-light md:w-[40%] md:mr-20">
+          {ageGroup !== null? (
+              <div
+                className="h-3 rounded-full border-[0px] bg-orange-dark"
+                style={{ width: "40%" }}
+              ></div>
+            ) : (
+              <div
+                className="h-3 rounded-full border-[0px] bg-orange-dark"
+                style={{ width: "20%" }}
+              ></div>
+            )}
+          </div>
+        </div>
       </div>
       <div className="flex min-h-full flex-col items-center justify-center">
         <div className="h-auto w-full max-w-[30rem] px-3">
