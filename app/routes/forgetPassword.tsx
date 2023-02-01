@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { useState } from "react";
 
-import { validateEmail } from "~/utils";
+import { validateEmail } from "~/utils.server";
 import Input from "~/components/input";
 import Button from "~/components/button";
 import BackButton from "~/components/backButton";

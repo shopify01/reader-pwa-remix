@@ -1,19 +1,11 @@
-import type { ActionArgs, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { Form } from "@remix-run/react";
-import { useState } from "react";
 import BackButton from "~/components/backButton";
 import Button from "~/components/button";
 
 interface Data {
   label: string;
 }
-
-export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const genere = formData.get("genere");
-  return genere;
-}
-
 export const meta: MetaFunction = () => {
   return {
     title: "Choose Genere",
@@ -41,8 +33,7 @@ const data: Data[] = [
   { label: "Travel" },
 ];
 
-export default function StepThree() {
-  const [genere, setGenere] = useState<Data[]>([]);
+export default function StepThree({genere, setGenere,handleComponent}) {
 
   const toggleSelection = (item: Data) => {
     const index = genere.indexOf(item);
@@ -105,13 +96,13 @@ export default function StepThree() {
                 borderColor={"border-orange-light"}
                 textColor={"text-orange-default"}
                 fontSize="text-base"
-                type="reset"
+                handleClick={() => setGenere('')}
               />
-              <Button
+              <Button              
                 label="Continue"
                 maxWidth="max-w-[200px]"
-                fontSize="text-base"
-                type="submit"
+                fontSize="text-base" 
+                handleClick={() => handleComponent()}
               />
             </div>
           </Form>

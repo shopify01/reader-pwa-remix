@@ -1,15 +1,8 @@
-import type { ActionArgs, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { Form } from "@remix-run/react";
-import { useState } from "react";
 import BackButton from "~/components/backButton";
 import Button from "~/components/button";
-import RadioButton from "~/components/radioButton";
-
-export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const gender = formData.get("gender");
-  return gender;
-}
+import  RadioButton from "~/components/radioButton";
 
 export const meta: MetaFunction = () => {
   return {
@@ -28,12 +21,8 @@ const Data = [
   },
 ];
 
-export default function StepOne() {
-  const [gender, setGender] = useState('');
-
-  const onSelect = (e: any) => {
-    setGender(e);
-  };
+export default function StepOne({gender, setGender ,handleComponent}) {
+  
   return (
     <>
       <div className="mt-6 mb-10 flex items-center">
@@ -66,17 +55,17 @@ export default function StepOne() {
                     key={index}
                     label={item.label}
                     value={gender}
-                    handleClick={() => onSelect(item.label)}
+                    handleClick={() => setGender(item.label)}
                   />
                 );
               })}
             </div>
             <div className="mt-40">
-              <Button
+              <Button                
                 label="Continue"
                 maxWidth="max-w-full"
                 fontSize="text-base"
-                type="submit"
+                handleClick={() => handleComponent()}
               />
             </div>
           </Form>

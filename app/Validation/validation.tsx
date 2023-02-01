@@ -37,9 +37,10 @@ export function validateConfirmPassword(password: string, cpassword: string) {
 }
 
 export function validatePhoneNumber(phoneNumber: number) {
+	const pattern = /^\D*(\d\D*){9,14}$/;
 	if (!phoneNumber) {
 		return "Number is required"
+	} else if (!phoneNumber.match(pattern)) {
+		return "Phone number is invalid";
 	}
-	const pattern = /^\d{10}$/;
-	return pattern.test(phoneNumber);
   }

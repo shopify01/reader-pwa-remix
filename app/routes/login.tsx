@@ -1,40 +1,62 @@
 import type { ActionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, Link } from "@remix-run/react";
 import { useState } from "react";
-import { validateEmailUser } from "~/utils";
+import { validateEmailUser } from "~/utils.server";
 import Checkbox from "~/components/checkbox";
 import Input from "~/components/input";
 import Button from "~/components/button";
 import BackButton from "~/components/backButton";
 import { BsApple, BsFacebook } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
+import { signInUser } from "~/utils/auth";
+import supabaseToken from "~/utils/cookie";
+
 export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  if (!validateEmailUser(email)) {
-    return json(
-      { errors: { email: "Email or Username is invalid", password: null } },
-      { status: 400 }
-    );
-  }
+  try {
+    const formData = await request.formData();
+    const email = formData.get("email");
+    const password = formData.get("password");
+    if (!validateEmailUser(email)) {
+      return json(
+        { errors: { email: "Email or Username is invalid", password: null } },
+        { status: 400 }
+      );
+    }
 
-  if (typeof password !== "string" || password.length === 0) {
-    return json(
-      { errors: { email: null, password: "Password is required" } },
-      { status: 400 }
-    );
-  }
+    if (typeof password !== "string" || password.length === 0) {
+      return json(
+        { errors: { email: null, password: "Password is required" } },
+        { status: 400 }
+      );
+    }
 
-  if (password.length < 8) {
-    return json(
-      { errors: { email: null, password: "Password is too short" } },
-      { status: 400 }
-    );
-  }
+    if (password.length < 8) {
+      return json(
+        { errors: { email: null, password: "Password is too short" } },
+        { status: 400 }
+      );
+    }
 
-  return null;
+    const { data, error } = await signInUser({
+      email,
+      password,
+    });
+    if (data) {
+      return redirect("/home", {
+        headers: {
+          "Set-Cookie": await supabaseToken.serialize(data.access_token, {
+            expires: new Date(data?.expires_at),
+            maxAge: data.expires_in,
+          }),
+        },
+      });
+    }
+    throw error;
+  } catch (error) {
+    console.log("error", error);
+    return json(error, { status: 500 });
+  }
 }
 
 export const meta: MetaFunction = () => {

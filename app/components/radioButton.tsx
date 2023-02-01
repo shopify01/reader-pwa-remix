@@ -1,8 +1,9 @@
 import React from "react";
+import type { InputHTMLAttributes } from "react";
 interface radioProps {
   label: string;
   value: string;
-  handleClick?: (e: MouseEvent) => void;
+  handleClick?: (e: InputHTMLAttributes<HTMLInputElement>) => void;
   className?: string;
 }
 const RadioButton = ({
@@ -13,10 +14,11 @@ const RadioButton = ({
 }: radioProps) => {
   return (
     <>
-      <div className="form-check mb-6 flex items-center">
+      <div className="form-check mb-6 flex-col items-center">
         <input
-          className="form-check-input mt-1 mr-2 h-4 w-4 cursor-pointer appearance-none rounded-full border-[2px] border-orange-dark bg-white-default bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-orange-dark checked:bg-orange-dark"
+          className="form-check-input mt-2 mr-4 h-4 w-4 cursor-pointer appearance-none rounded-full border-[2px] border-orange-dark bg-white-default bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-orange-dark checked:bg-orange-dark"
           type="radio"
+          name="flexRadioDefault"
           value={value}
           onClick={handleClick}
         />
@@ -28,5 +30,4 @@ const RadioButton = ({
     </>
   );
 };
-
 export default RadioButton;

@@ -1,27 +1,11 @@
-import type { ActionArgs, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { useState } from "react";
 import Input from "~/components/input";
 import Button from "~/components/button";
 import Select from "~/components/select";
-import { validatePhoneNumber, validateUsername } from "~/Validation/validation";
 import BackButton from "~/components/backButton";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-
-export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const fullname = formData.get("fullname");
-  const phone = formData.get("phone");
-  const formErrors = {
-    username: validateUsername(fullname),
-    phone: validatePhoneNumber(phone),
-  };
-  if (Object.values(formErrors).some(Boolean))
-    return {
-      formErrors,
-    };
-  return null;
-}
 
 export const meta: MetaFunction = () => {
   return {
@@ -44,24 +28,15 @@ const Data = [
   {
     label: "Date of Birth",
     type: "date",
-    name: "date",
+    name: "dob",
     placeholder: "Enter DOB",
   },
 ];
 
-export default function StepFour() {
+export default function StepFour({ formData, setFormData, handleComponent }) {
+  
   const actionData = useActionData<typeof action>();
-  const [formData, setFormData] = useState<{
-    fullname: string;
-    phone: string;
-    dob: string;
-    country: string;
-  }>({
-    fullname: "",
-    phone: "",
-    dob: "",
-    country: "",
-  });
+  const [profileImage, setProfileImage] = useState(null);
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -69,13 +44,20 @@ export default function StepFour() {
       [name]: value,
     }));
   };
+  const handleFileSelect = () => {
+    document.getElementById("fileInput").click();
+  };
+
+  const handleUploadImage = (e: any) => {
+    setProfileImage(e.target.files[0]);
+  };
   return (
     <>
       <div className="mt-6 mb-10 flex items-center">
         <BackButton url={"/welcome"} />
-        <div className="m-4 w-full md:flex justify-center ">
-          <div className="ml-8 h-3 w-[50%] max-w-[50%] rounded-full border-[0px] bg-grey-light md:w-[40%] md:mr-20">
-          {formData.length? (
+        <div className="m-4 w-full justify-center md:flex ">
+          <div className="ml-8 h-3 w-[50%] max-w-[50%] rounded-full border-[0px] bg-grey-light md:mr-20 md:w-[40%]">
+            {formData.length ? (
               <div
                 className="h-3 rounded-full border-[0px] bg-orange-dark"
                 style={{ width: "80%" }}
@@ -101,19 +83,29 @@ export default function StepFour() {
           <div className="w-25 my-8 flex justify-center">
             <div className="relative">
               <img
-                src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
+                src={
+                  profileImage !== null
+                    ? profileImage
+                    : "https://i.pinimg.com/236x/47/5a/86/475a86177aeedacf8dc7f5e2b4eff61f.jpg"
+                }
                 class="w-32 rounded-full shadow-lg"
-                alt="Avatar"
+                alt="profile_picture"
               />
+               <input
+                  type="file"
+                  id="fileInput"
+                  style={{ display: "none" }}
+                  onChange={handleUploadImage}
+                />
               <button
-                type="file"
                 className=" fixed absolute bottom-0 right-0 rounded-md bg-orange-dark"
+                onClick={handleFileSelect}
               >
                 <MdOutlineModeEditOutline size={24} />
               </button>
             </div>
           </div>
-          <Form method="post" className="my-3">
+          <Form method="post" action="/complete-profile" className="my-3">
             {Data?.map((item, index) => {
               const { name, type, label, placeholder } = item;
               const error = actionData?.formErrors?.[name] || "";
@@ -142,7 +134,7 @@ export default function StepFour() {
               <Button
                 label="Continue"
                 maxWidth="max-w-full"
-                fontSize="text-base"
+                fontSize="text-base"   
                 type="submit"
               />
             </div>

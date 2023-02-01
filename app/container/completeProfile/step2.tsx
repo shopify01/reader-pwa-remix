@@ -1,14 +1,7 @@
-import type { ActionArgs, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { Form } from "@remix-run/react";
-import { useState } from "react";
 import BackButton from "~/components/backButton";
 import Button from "~/components/button";
-
-export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const gender = formData.get("gender");
-  return gender;
-}
 
 export const meta: MetaFunction = () => {
   return {
@@ -26,9 +19,8 @@ const Data = [
   { id:8, label: ">=50" },
 ];
 
-export default function StepTwo() {
-  const [ageGroup, setAgeGroup] = useState(null);
-
+export default function StepTwo({ ageGroup, setAgeGroup, handleComponent }) {
+  
   return (
     <>
       <div className="mt-6 mb-10 flex items-center">
@@ -72,11 +64,11 @@ export default function StepTwo() {
               })}
             </div>
             <div className="mt-40">
-              <Button
+              <Button              
                 label="Continue"
                 maxWidth="max-w-full"
                 fontSize="text-base"
-                type="submit"
+                handleClick={() => handleComponent()}
               />
             </div>
           </Form>

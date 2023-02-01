@@ -13,24 +13,40 @@ import {
 import BackButton from "~/components/backButton";
 import Modal from "~/components/Modal";
 import Loader from "~/components/loader";
+import { HiUserCircle } from "react-icons/hi";
+import { createUser } from "~/utils/auth";
 
 export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const username = formData.get("username");
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const cpassword = formData.get("cpassword");
-  const formErrors = {
-    username: validateUsername(username),
-    email: validateEmail(email),
-    password: validatePassword(password),
-    cpassword: validateConfirmPassword(password, cpassword),
-  };
-  if (Object.values(formErrors).some(Boolean))
-    return {
-      formErrors,
+  try {
+    const formData = await request.formData();
+    const username = formData.get("username");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const cpassword = formData.get("cpassword");
+    const formErrors = {
+      username: validateUsername(username),
+      email: validateEmail(email),
+      password: validatePassword(password),
+      cpassword: validateConfirmPassword(password, cpassword),
     };
-  return true;
+    if (Object.values(formErrors).some(Boolean))
+      return {
+        formErrors,
+      };
+
+    const { user, error } = createUser({
+      username,
+      email,
+      password,
+    });
+    if (user?.status === 201) {
+      return json({ user }, { status: 200 });
+    }
+    throw error;
+  } catch (error) {
+    console.log("error", error);
+    return json({ error }, { status: 500 });
+  }
 }
 
 export const meta: MetaFunction = () => {
@@ -92,6 +108,9 @@ export default function SignUpPage() {
     <>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <div className="max-w-[20rem]">
+          <div className="my-16 flex justify-center">
+            <HiUserCircle size={130} className="text-orange-dark" />
+          </div>
           <p className="text-semibold mb-2 text-center text-xl text-orange-dark">
             Sign Up Successful!
           </p>
