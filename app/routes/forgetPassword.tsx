@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { useState } from "react";
 
-import { validateEmail } from "~/utils";
+import { validateEmail } from "~/utils.server";
 import Input from "~/components/input";
 import Button from "~/components/button";
 import BackButton from "~/components/backButton";
@@ -57,12 +57,14 @@ export default function ForgetPasswordPage() {
               error={actionData?.errors?.["email"] || ""}
               onChange={handleChange}
             />
+            <div className="mt-40">
             <Button
               label="Continue"
               maxWidth="max-w-full"
               fontSize="text-base"
               type="submit"
             />
+            </div>
           </Form>
         </div>
       </div>

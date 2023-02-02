@@ -1,5 +1,6 @@
+import { Countries} from "./data"; 
 interface selectProps {
-  handleChange: () => void;
+  handleChange?: () => void;
   name: string;
   data: string;
   value: string;
@@ -19,7 +20,7 @@ const Select = ({
   width,
 }: selectProps) => {
   return (
-    <div >
+    <div>
       <label className="text-black-default">{label}</label>
       <div className="mb-3 xl:w-96">
         <select
@@ -28,9 +29,9 @@ const Select = ({
           onChange={handleChange}
           class="form-select text-black-default focus:text-black-default focus:bg-white mt-5 block w-full border-b-[1px] border-orange-dark bg-white-default bg-clip-padding px-3 py-1.5 pl-0 text-base font-normal transition ease-in-out focus:outline-none"
         >
-          <option >{placeholder}</option>
-          {data?.map((item, index)=>{
-            return <option key={index} value={item} className="focus:bg-orange-dark">{item}</option>
+          <option key='blankKey' hidden	value>{placeholder}</option>
+          {Countries?.map((item, index)=>{
+            return <option key={index} value={item} className="focus:bg-orange-dark">{item.code}{item.name}</option>
           })}           
         </select>
       </div>

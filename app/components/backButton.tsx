@@ -1,17 +1,15 @@
 import { Link } from "@remix-run/react";
-import BackArrow from "../../assets/arrow.svg";
+import { BiArrowBack } from "react-icons/bi";
 interface BackButtonProps {
   url: String;
 }
 const BackButton = ({ url }: BackButtonProps) => {
   return (
-    <Link to={`${url}`}>
-      <img
-        src={BackArrow}
-        alt={"back_arrow"}
-        className={"m-3 h-auto w-[2rem]"}
-      />
-    </Link>
+    <div className="m-4 w-full max-w-[2rem] ">
+      <Link to={`${url}`}>
+        <BiArrowBack size={24} />
+      </Link>
+    </div>
   );
 };
 
