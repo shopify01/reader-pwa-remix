@@ -1,27 +1,47 @@
 import { useState } from "react";
-import { redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import type { ActionArgs } from "@remix-run/node";
 import StepOne from "../container/completeProfile/step1";
 import StepTwo from "../container/completeProfile/step2";
 import StepThree from "../container/completeProfile/step3";
 import StepFour from "../container/completeProfile/step4";
-import SignUpPage from "./signup";
-import { validatePhoneNumber, validateUsername } from "~/Validation/validation";
+import SignUpPage from "../container/completeProfile/step5";
+import { validateConfirmPassword, validateEmail, validatePassword,validateUsername } from "~/Validation/validation";
+import { createUser } from "~/utils/auth";
 
 export async function action({ request }: ActionArgs) {
-  const form = await request.formData();
-  const fullname = form.get("fullname");
-  const phone = form.get("phone");
-  const formErrors = {
-    username: validateUsername(fullname),
-    phone: validatePhoneNumber(phone),
-  };
-  if (Object.values(formErrors).some(Boolean))
-    return {
-      formErrors,
+  try {
+    const form = await request.formData();
+    const username = form.get("username");
+    const email = form.get("email");
+    const password = form.get("password");
+    const cpassword = form.get("cpassword");
+    console.log("--------------------",username,email, password, cpassword);
+    
+    const formErrors = {
+      username: validateUsername(username),
+      email: validateEmail(email),
+      password: validatePassword(password),
+      cpassword: validateConfirmPassword(password, cpassword),
     };
-  return redirect("/signUp");
+    if (Object.values(formErrors).some(Boolean))
+      return {
+        formErrors,
+      };
+    const fields = {username, email, password}
+    const { user, error } = createUser(fields);
+    console.log("@@@@",user);
+    
+    if (user?.status === 201) {
+      return json({ user }, { status: 200 });
+    }
+    throw error;
+  } catch (error) {
+    console.log("error", error);
+    return json({ error }, { status: 500 });
+  }
 }
+
 const CompleteProfile = () => {
   const [gender, setGender] = useState<string>("");
   const [ageGroup, setAgeGroup] = useState<null>(null);
@@ -37,7 +57,18 @@ const CompleteProfile = () => {
     phone: "",
     dob: "",
     country: "",
-  }); 
+  });
+  const [signUpData, setSignupData] = useState<{
+    username: string;
+    email: string;
+    password: string;
+    cpassword: string;
+  }>({
+    username: "",
+    email: "",
+    password: "",
+    cpassword: "",
+  });
   const handleComponent = () => {
     setCountData(countData+1)
   }
@@ -60,12 +91,12 @@ const CompleteProfile = () => {
       }
       {countData === 4  && 
         <div>
-          <StepFour handleComponent={handleComponent} formData={formData} setFormData={setFormData}/>
+          <StepFour handleComponent={handleComponent} formData={formData} setFormData={setFormData} />
         </div>
       }
       {countData === 5  && 
         <div>
-          <SignUpPage group={gender} age={ageGroup} profileData={formData}/>
+          <SignUpPage formData={signUpData} setFormData={setSignupData} group={gender} age={ageGroup} preference={genere} profileData={formData}/>
         </div>
       }
     </>

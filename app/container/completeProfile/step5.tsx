@@ -1,53 +1,13 @@
-import type { ActionArgs, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import Checkbox from "~/components/checkbox";
 import Input from "~/components/input";
 import Button from "~/components/button";
-import {
-  validateConfirmPassword,
-  validateEmail,
-  validatePassword,
-  validateUsername,
-} from "../Validation/validation";
 import BackButton from "~/components/backButton";
 import Modal from "~/components/Modal";
 import Loader from "~/components/loader";
 import { HiUserCircle } from "react-icons/hi";
-import { createUser } from "~/utils/auth";
-
-export async function action({ request }: ActionArgs) {
-  try {
-    const formData = await request.formData();
-    const username = formData.get("username");
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const cpassword = formData.get("cpassword");
-    const formErrors = {
-      username: validateUsername(username),
-      email: validateEmail(email),
-      password: validatePassword(password),
-      cpassword: validateConfirmPassword(password, cpassword),
-    };
-    if (Object.values(formErrors).some(Boolean))
-      return {
-        formErrors,
-      };
-
-    const { user, error } = createUser({
-      username,
-      email,
-      password,
-    });
-    if (user?.status === 201) {
-      return json({ user }, { status: 200 });
-    }
-    throw error;
-  } catch (error) {
-    console.log("error", error);
-    return json({ error }, { status: 500 });
-  }
-}
 
 export const meta: MetaFunction = () => {
   return {
@@ -81,22 +41,13 @@ const SignupFormData = [
   },
 ];
 
-export default function SignUpPage() {
+export default function SignUpPage({formData, setFormData, group, age, preference, profileData}) {
   const actionData = useActionData<typeof action>();
   const [openModal, setOpenModal] = useState(false);
-  const [formData, setFormData] = useState<{
-    username: string;
-    email: string;
-    password: string;
-    cpassword: string;
-  }>({
-    username: "",
-    email: "",
-    password: "",
-    cpassword: "",
-  });
+  console.log("actionData",actionData);
+  
   useEffect(() => {
-    if (actionData === true) {
+    if (actionData?.user?.length) {
       setOpenModal(true);
     }
   }, [actionData]);
@@ -148,7 +99,7 @@ export default function SignUpPage() {
             Enter your username, email & password. If you forget it, then you
             have to do forgot password.
           </p>
-          <Form method="post" className="my-3">
+          <Form method="post" action="/complete-profile" className="my-3">
             {SignupFormData?.map((item, index) => {
               const { name, type, label, placeholder } = item;
               const error = actionData?.formErrors?.[name] || "";

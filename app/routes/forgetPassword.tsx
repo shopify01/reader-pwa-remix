@@ -2,12 +2,14 @@ import type { ActionArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { useState } from "react";
-
 import { validateEmail } from "~/utils.server";
 import Input from "~/components/input";
 import Button from "~/components/button";
 import BackButton from "~/components/backButton";
+import { forgetPassword } from "~/utils/auth";
+
 export async function action({ request }: ActionArgs) {
+  try {
   const formData = await request.formData();
   const email = formData.get("email");
   if (!validateEmail(email)) {
@@ -16,8 +18,15 @@ export async function action({ request }: ActionArgs) {
       { status: 400 }
     );
   }
-
-  return redirect("/Otp-verify");
+  const { data, error } = await forgetPassword({email});
+  if (data) {
+    return redirect("/Otp-verify");
+  }
+  throw error;
+} catch (error) {
+  console.log("error", error);
+  return json(error, { status: 500 });
+}
 }
 
 export const meta: MetaFunction = () => {

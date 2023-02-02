@@ -1,7 +1,17 @@
+import { useEffect } from "react";
 import BookImage from "~/../assets/book.jpg";
 import Loader from "~/components/loader";
+import { useNavigate } from "@remix-run/react";
 
 export default function Index() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setTimeout(() => {
+      navigate("/welcome");
+    }, 2000);
+  }, [navigate]);
+
   return (
     <main
       className={`relative flex min-h-screen flex-col items-center justify-center bg-white-default dark:bg-black-default`}

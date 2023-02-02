@@ -47,7 +47,7 @@ export default function StepTwo({ ageGroup, setAgeGroup, handleComponent }) {
           <p className="text-xl font-thin">
             Select age range for better content.
           </p>
-          <Form method="post" className="my-3">
+          <Form className="my-3">
             <div className="mt-8 flex flex-wrap justify-evenly gap-5">
               {Data?.map((item) => {
                 return (

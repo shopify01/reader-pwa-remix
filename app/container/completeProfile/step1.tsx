@@ -47,7 +47,7 @@ export default function StepOne({gender, setGender ,handleComponent}) {
         <div className="h-auto w-full max-w-[30rem] px-3">
           <p className="text-2xl font-medium">What is your gender? &#127886;</p>
           <p className="text-xl font-thin">Select gender for better content.</p>
-          <Form method="post" className="my-3">
+          <Form className="my-3">
             <div className="mt-8">
               {Data?.map((item, index) => {
                 return (

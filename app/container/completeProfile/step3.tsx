@@ -72,7 +72,7 @@ export default function StepThree({genere, setGenere,handleComponent}) {
             Select your preferred book for better recommendations, or you can
             skip it.
           </p>
-          <Form method="post" className="my-3">
+          <Form className="my-3">
             <div className="mt-8 flex flex-wrap justify-evenly gap-5">
               {data?.map((item, index) => {
                 return (

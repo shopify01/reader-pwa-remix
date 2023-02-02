@@ -105,7 +105,7 @@ export default function StepFour({ formData, setFormData, handleComponent }) {
               </button>
             </div>
           </div>
-          <Form method="post" action="/complete-profile" className="my-3">
+          <Form className="my-3">
             {Data?.map((item, index) => {
               const { name, type, label, placeholder } = item;
               const error = actionData?.formErrors?.[name] || "";
@@ -135,7 +135,7 @@ export default function StepFour({ formData, setFormData, handleComponent }) {
                 label="Continue"
                 maxWidth="max-w-full"
                 fontSize="text-base"   
-                type="submit"
+                handleClick={() => handleComponent()}
               />
             </div>
           </Form>

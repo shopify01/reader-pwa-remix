@@ -1,5 +1,5 @@
 import type { ActionArgs, MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { Form, useActionData, Link } from "@remix-run/react";
 import { useState } from "react";
 import { validateEmailUser } from "~/utils.server";
@@ -10,7 +10,7 @@ import BackButton from "~/components/backButton";
 import { BsApple, BsFacebook } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import { signInUser } from "~/utils/auth";
-import supabaseToken from "~/utils/cookie";
+import { createUserSession } from "~/utils/cookieSession.server";
 
 export async function action({ request }: ActionArgs) {
   try {
@@ -43,14 +43,9 @@ export async function action({ request }: ActionArgs) {
       password,
     });
     if (data) {
-      return redirect("/home", {
-        headers: {
-          "Set-Cookie": await supabaseToken.serialize(data.access_token, {
-            expires: new Date(data?.expires_at),
-            maxAge: data.expires_in,
-          }),
-        },
-      });
+      const userId = data.session.user.id;
+      const redirectTo = `/home`;
+      return createUserSession(request, userId, redirectTo);
     }
     throw error;
   } catch (error) {
