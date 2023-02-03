@@ -7,45 +7,55 @@ import Input from "~/components/input";
 import Button from "~/components/button";
 import BackButton from "~/components/backButton";
 import Modal from "~/components/Modal";
+import { resetPassword } from "~/utils/auth";
 export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const password = formData.get("password");
-  const cnfpassword = formData.get("cnfpassword");
-  if (typeof password !== "string" || password.length === 0) {
-    return json(
-      { errors: { cnfpassword: null, password: "Password is required" } },
-      { status: 400 }
-    );
-  }
+  try {
+    const formData = await request.formData();
+    const password = formData.get("password");
+    const cnfpassword = formData.get("cnfpassword");
+    if (typeof password !== "string" || password.length === 0) {
+      return json(
+        { errors: { cnfpassword: null, password: "Password is required" } },
+        { status: 400 }
+      );
+    }
 
-  if (password.length < 8) {
-    return json(
-      { errors: { cnfpassword: null, password: "Password is too short" } },
-      { status: 400 }
-    );
-  }
-  if (password !== cnfpassword) {
-    return json(
-      {
-        errors: {
-          password: null,
-          cnfpassword: "Confirm Password did not match with Password",
+    if (password.length < 8) {
+      return json(
+        { errors: { cnfpassword: null, password: "Password is too short" } },
+        { status: 400 }
+      );
+    }
+    if (password !== cnfpassword) {
+      return json(
+        {
+          errors: {
+            password: null,
+            cnfpassword: "Confirm Password did not match with Password",
+          },
         },
-      },
-      { status: 400 }
-    );
+        { status: 400 }
+      );
+    }
+    const { data, error } = await resetPassword({ password,cnfpassword });
+    if (data) {
+      console.log(data);
+    }
+    throw error;
+  } catch (error) {
+    console.log("error", error);
+    return json(error, { status: 500 });
   }
-  return true;
 }
 const ResetFormData = [
   {
-    label: "Password",
+    label: "New Password",
     type: "password",
     name: "password",
     placeholder: "Enter password",
   },
   {
-    label: "Confirm Password",
+    label: "Confirm New Password",
     type: "password",
     name: "cnfpassword",
     placeholder: "Enter password",
@@ -65,7 +75,7 @@ export default function ResetPasswordPage() {
     cnfpassword: "",
   });
   useEffect(() => {
-    if (actionData === true) {
+    if (actionData !==undefined ) {
       setOpenModal(true);
     }
   }, [actionData]);
@@ -87,7 +97,7 @@ export default function ResetPasswordPage() {
             label="Go to Home"
             maxWidth="max-w-full"
             fontSize="text-base"
-            handleClick={() => {}}
+            handleClick={() => redirect("/home")}
           />
         </div>
       </Modal>
