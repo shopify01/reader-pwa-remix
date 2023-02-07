@@ -6,8 +6,10 @@ import { MdOutlineNotificationAdd } from "react-icons/md";
 import { BsArrowRight } from "react-icons/bs";
 import { GenreData } from "~/components/data";
 import GenreCard from "~/components/genreCard";
+import { useNavigate } from "@remix-run/react";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [books, setBooks] = useState([]);
   useEffect(() => {
     fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
@@ -15,10 +17,15 @@ const Home = () => {
       .then((data) => setBooks(data.items))
       .catch((error) => console.error(error));
   }, []);
-  
+  const handleClick = (screen?: String) => {
+    if (screen) {
+      navigate(`/${screen}`);
+    }
+  };
+
   return (
-    <div className="m-6">
-      <div className="mb-8 flex justify-between ">
+    <div>
+      <div className="header shadow-md p-5 flex justify-between w-full h-[80px] fixed bg-white-default top-0 left-0">
         <div className="flex items-center gap-6 text-3xl font-medium">
           <img
             src={BookImage}
@@ -29,10 +36,11 @@ const Home = () => {
         </div>
         <div className="flex items-center gap-8 text-3xl">
           <RiSearchLine />
-          <MdOutlineNotificationAdd />
+          <MdOutlineNotificationAdd onClick={() => handleClick("notification")}/>
         </div>
       </div>
-      <div className="flex-wrap-no flex gap-6 overflow-x-auto">
+      <div className="m-5">
+      <div className="flex-wrap-no flex gap-6 overflow-x-auto mt-[100px]">
         {books.map((item,index) => {
           return (
             <BookCard
@@ -48,7 +56,7 @@ const Home = () => {
       <div className="mt-7 mb-4 flex items-center justify-between text-2xl font-medium">
         <p>Explore by Genre</p>
         <span className="text-orange-dark">
-          <BsArrowRight />
+            <BsArrowRight onClick={() => handleClick("genre")}/>
         </span>
       </div>
       <div className="flex-wrap-no flex gap-6 overflow-x-auto">
@@ -118,6 +126,7 @@ const Home = () => {
             />
           );
         })}
+      </div>
       </div>
     </div>
   );

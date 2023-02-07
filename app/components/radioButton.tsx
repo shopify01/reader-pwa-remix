@@ -16,7 +16,7 @@ const RadioButton = ({
     <>
       <div className="form-check mb-6 flex-col items-center">
         <input
-          className="form-check-input mt-2 mr-4 h-4 w-4 cursor-pointer appearance-none rounded-full border-[2px] border-orange-dark bg-white-default bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-orange-dark checked:bg-orange-dark"
+          className="form-check-input mt-2 mr-4 h-4 w-4 cursor-pointer appearance-none rounded-full border-[2px] border-orange-dark bg-white-default bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-orange-dark checked:bg-orange-dark focus:ring-2 focus:ring-orange-dark focus:ring-offset-1"
           type="radio"
           name="flexRadioDefault"
           value={value}

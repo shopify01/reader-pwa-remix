@@ -42,7 +42,7 @@ export async function action({ request }: ActionArgs) {
   }
 }
 
-const CompleteProfile = () => {
+const CompleteProfile: React.FC = () => {
   const [gender, setGender] = useState<string>("");
   const [ageGroup, setAgeGroup] = useState<null>(null);
   const [genere, setGenere] = useState<Data[]>([]);
