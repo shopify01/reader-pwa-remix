@@ -40,6 +40,29 @@ export const GenreData = [
   { image: TravelImage, label: "Travel" },
 ];
 
+export const SortArr = [
+  { label: "Trending" },
+  { label: "New Releases" },
+  { label: "Highest Rating" },
+  { label: "Lowest Rating" },
+  { label: "Highest Price" },
+  { label: "Lowest Price" },
+];
+export const Rating = [
+  { label: "All" },
+  { label: "4.5+" },
+  { label: "4.0+" },
+];
+export const Language = [
+  { label: "All" },
+  { label: "English" },
+  { label: "Mandarin" },
+  { label: "Other Languages" },
+];
+export const Age = [
+  { label: "All" },
+  { label: "Age 12 & Under" }
+];
 export const Countries = [
   {
     code: "+7 840",

@@ -15,7 +15,7 @@ const SearchBar = ({
     <div className="flex h-[45px] items-center rounded-full border-[1px] border-orange-default p-4 text-xl">
       <RiSearchLine />
       <input
-        className="ml-3 h-[30px] focus:outline-none"
+        className="ml-3 h-[30px] focus:outline-none w-full sm:w-auto"
         value={value}
         onChange={handleChange}
       />

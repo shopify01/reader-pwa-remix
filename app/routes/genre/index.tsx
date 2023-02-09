@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { RiSearchLine } from "react-icons/ri";
+import { useNavigate } from "@remix-run/react";
 import BackButton from "~/components/backButton";
 import { GenreData } from "~/components/data";
 import GenreCard from "~/components/genreCard";
 import SearchBar from "~/components/searchbar";
 
 const Genre: React.FC = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<GenreData[]>(GenreData);
 
@@ -17,6 +19,11 @@ const Genre: React.FC = () => {
         item.label.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
+  };
+  const handleClick = (screen?: String) => {
+    if (screen) {
+      navigate(`/${screen}`);
+    }
   };
   return (
     <div>
@@ -44,6 +51,7 @@ const Genre: React.FC = () => {
                 key={item.label}
                 genreTitle={item.label}
                 genereImage={item.image}
+                handleClick={() => handleClick("genre/genre-type")}
               />
             );
           })}
