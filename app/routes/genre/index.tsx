@@ -51,7 +51,7 @@ const Genre: React.FC = () => {
                 key={item.label}
                 genreTitle={item.label}
                 genereImage={item.image}
-                handleClick={() => handleClick("genre/genre-type")}
+                handleClick={() => handleClick(`genre/genretype=${item?.label}`)}
               />
             );
           })}

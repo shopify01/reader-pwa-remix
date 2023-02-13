@@ -3,7 +3,7 @@ import { Form, useActionData } from "@remix-run/react";
 import { useState } from "react";
 import Input from "~/components/input";
 import Button from "~/components/button";
-import Select from "~/components/select";
+// import Select from "~/components/select";
 import BackButton from "~/components/backButton";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 
@@ -123,13 +123,13 @@ export default function StepFour({ formData, setFormData, handleComponent }) {
                 />
               );
             })}
-            <Select
+            {/* <Select
               name="country"
               label="Country"
               placeholder="Select Country"
               value={formData.country}
               onChange={handleChange}
-            />
+            /> */}
             <div className="mt-20">
               <Button
                 label="Continue"

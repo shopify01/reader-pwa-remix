@@ -16,10 +16,13 @@ export async function action({ request }: ActionArgs) {
     const email = form.get("email");
     const password = form.get("password");
     const cpassword = form.get("cpassword");
-    console.log("--------------------",username,email, password, cpassword);
-    // const gender = localStorage.getItem("gender")
-    // console.log(">>>>>>>>>>>>>",gender);
-    
+    const gender = form.get("gender");
+    const age = form.get("age");
+    const genre = form.get("genre");
+    const fullname = form.get("fullname");
+    const phone = form.get("phone");
+    const dob = form.get("dob");
+
     const formErrors = {
       username: validateUsername(username),
       email: validateEmail(email),
@@ -30,12 +33,11 @@ export async function action({ request }: ActionArgs) {
       return {
         formErrors,
       };
-    const fields = {username, email, password}
-    const { user, error } = createUser(fields);
-    console.log("@@@@",user);
+    const fields = {username, email, password, gender, age, genre, fullname, phone, dob}
+    const { user, error } = await createUser(fields);
     
-    if (user?.status === 201) {
-      return json({ user }, { status: 200 });
+    if (user) {
+      return json({ res: user }, { status: 200 });
     }
     throw error;
   } catch (error) {
@@ -49,6 +51,7 @@ const CompleteProfile: React.FC = () => {
   const [ageGroup, setAgeGroup] = useState<null>(null);
   const [genere, setGenere] = useState<Data[]>([]);
   const [countData, setCountData] = useState(1);
+  
   const [formData, setFormData] = useState<{
     fullname: string;
     phone: string;
@@ -58,7 +61,6 @@ const CompleteProfile: React.FC = () => {
     fullname: "",
     phone: "",
     dob: "",
-    country: "",
   });
   const [signUpData, setSignupData] = useState<{
     username: string;
