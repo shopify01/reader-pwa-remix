@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
+import React, { useEffect } from "react";
 import { Form } from "@remix-run/react";
 import BackButton from "~/components/backButton";
 import Button from "~/components/button";
@@ -21,7 +22,12 @@ const Data = [
   },
 ];
 
-export default function StepOne({gender, setGender ,handleComponent}) {
+export default function StepOne({ gender, setGender, handleComponent }) {
+    // useEffect(() => {
+    //   if (gender) {
+    //    localStorage.setItem("gender",gender)
+    //  }
+    // }, [gender]);
   
   return (
     <>

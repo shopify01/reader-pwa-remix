@@ -17,6 +17,8 @@ export async function action({ request }: ActionArgs) {
     const password = form.get("password");
     const cpassword = form.get("cpassword");
     console.log("--------------------",username,email, password, cpassword);
+    // const gender = localStorage.getItem("gender")
+    // console.log(">>>>>>>>>>>>>",gender);
     
     const formErrors = {
       username: validateUsername(username),
