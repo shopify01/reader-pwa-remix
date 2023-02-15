@@ -1,47 +1,7 @@
-// import React, { useState } from "react";
-// import { RiSearchLine } from "react-icons/ri";
-// import BackButton from "~/components/backButton";
-// import { RxCross2 } from "react-icons/rx";
-// import SearchBar from "~/components/searchbar";
-
-// const SearchPage: React.FC = () => {
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const [searchResults, setSearchResults] = useState<Books[]>([]);
-
-//   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     event.preventDefault();
-//     setSearchTerm(event.target.value);
-//     setSearchResults(
-//       books.filter((item) =>
-//         item.volumeInfo.title.toLowerCase().includes(searchTerm.toLowerCase())
-//       )
-//     );
-//   };
-//   return (
-//     <div className="">
-//       <div className="top-0 left-0 flex w-full justify-between items-center bg-white-default p-5 shadow-md">
-//         <BackButton ml="ml-0" url={"/home"} />
-//         <SearchBar
-//           value={searchTerm}
-//           handleChange={handleChange}
-//           handleRemove={() => setSearchTerm("")}
-//         />
-//       </div>
-//       <div className="m-5 mt-[20px]flex min-h-full flex-col items-center justify-center">
-//         <div className="flex items-center justify-between font-medium h-auto w-full ">
-//           <p> Previous Search</p>
-//           <RxCross2 />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SearchPage;
-
 import React, { useState, useEffect } from "react";
 import BookCard from "~/components/card";
-import { useNavigate } from "@remix-run/react";
+import type { LoaderArgs } from "@remix-run/node";
+import { useNavigate, useLoaderData } from "@remix-run/react";
 import { BsFillGridFill, BsFillFileTextFill } from "react-icons/bs";
 import BackButton from "~/components/backButton";
 import SearchBar from "~/components/searchbar";
@@ -54,9 +14,29 @@ interface Book {
       thumbnail: string;
     };
   };
-}
+}export const loader = async ({ request }): LoaderArgs => {
+  let errors = {};
+  try {
+    const userAuthenticated = await isAuthenticated(request, true);
+    if (!userAuthenticated) {
+      return redirect("/login");
+    }
+    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
+    if (response.status === 200) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch data");
+    }
+  } catch (error) {
+    console.log("error", error);
+    errors.server = error?.message || error;
+    return json({ errors }, { status: 500 });
+  }
+};
 
 const SearchPage: React.FC = () => {
+  const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [column, setShowColumn] = useState<Boolean>(false);
   const [books, setBooks] = useState<Book[]>([]);
@@ -79,12 +59,12 @@ const SearchPage: React.FC = () => {
     );
   };
 
+
   useEffect(() => {
-    fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
-      .then((res) => res.json())
-      .then((data) => setBooks(data.items))
-      .catch((error) => console.error(error));
-  }, []);
+    if (loaderData) {
+      setBooks(loaderData.items)
+    }
+  }, [loaderData]);
     
   const handleClick = (screen?: String) => {
     if (screen) {

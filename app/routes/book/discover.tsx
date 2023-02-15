@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import type { LoaderArgs } from "@remix-run/node";
 import BookImage from "~/../assets/book.jpg";
 import BookCard from "~/components/card";
 import { RiSearchLine } from "react-icons/ri";
 import { BsArrowRight } from "react-icons/bs";
-import { useNavigate } from "@remix-run/react";
+import { useNavigate, useLoaderData } from "@remix-run/react";
 import SearchBar from "~/components/searchbar";
 
 interface Book {
@@ -14,8 +15,28 @@ interface Book {
     };
   };
 }
-
+export const loader = async ({ request }): LoaderArgs => {
+  let errors = {};
+  try {
+    const userAuthenticated = await isAuthenticated(request, true);
+    if (!userAuthenticated) {
+      return redirect("/login");
+    }
+    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
+    if (response.status === 200) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch data");
+    }
+  } catch (error) {
+    console.log("error", error);
+    errors.server = error?.message || error;
+    return json({ errors }, { status: 500 });
+  }
+};
 const Discover = () => {
+  const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [books, setBooks] = useState<Book[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,11 +58,10 @@ const Discover = () => {
   };
 
   useEffect(() => {
-    fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
-      .then((res) => res.json())
-      .then((data) => setBooks(data.items as Book[]))
-      .catch((error) => console.error(error));
-  }, []);
+    if (loaderData) {
+      setBooks(loaderData.items)
+    }
+  }, [loaderData]);
 
 //   const handleClick = (screen?: string) => {
 //     if (screen) {

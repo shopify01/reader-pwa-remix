@@ -52,6 +52,16 @@ export default function ForgetPasswordPage() {
       <BackButton url={"/login"} />
       <div className="flex min-h-full flex-col items-center justify-center">
         <div className="h-auto w-full max-w-[30rem] px-3">
+        {actionData?.error && (
+          <div
+            className="mb-4 text-center border border-black-light text-xl text-red-default px-4 py-3 rounded relative"
+            role="alert"
+          >
+            <strong className="font-bold">
+             Incorrect email !
+            </strong>          
+          </div>
+        )}
           <p className="text-2xl font-medium">Forget Password &#128273;</p>
           <p className="text-xl font-thin">
             Please Enter Your email address. we can send an Otp Code for

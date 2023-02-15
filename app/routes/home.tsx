@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import type { MetaFunction,LoaderArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import BookImage from "~/../assets/book.jpg";
 import BookCard from "~/components/card";
 import { RiSearchLine } from "react-icons/ri";
@@ -6,7 +8,8 @@ import { MdOutlineNotificationAdd } from "react-icons/md";
 import { BsArrowRight } from "react-icons/bs";
 import { GenreData } from "~/components/data";
 import GenreCard from "~/components/genreCard";
-import { useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { isAuthenticated } from "~/utils/auth";
 import SearchBar from "~/components/searchbar";
 
 interface Book {
@@ -17,8 +20,34 @@ interface Book {
     };
   };
 }
+export const loader = async ({ request }): LoaderArgs => {
+  let errors = {};
+  try {
+    const userAuthenticated = await isAuthenticated(request, true);
+    if (!userAuthenticated) {
+      return redirect("/login");
+    }
+    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
+    if (response.status === 200) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch data");
+    }
+  } catch (error) {
+    console.log("error", error);
+    errors.server = error?.message || error;
+    return json({ errors }, { status: 500 });
+  }
+};
+export const meta: MetaFunction = () => {
+  return {
+    title: "Home",
+  };
+};
 
 const Home = () => {
+  const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [books, setBooks] = useState<Book[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,7 +55,7 @@ const Home = () => {
 
   useEffect(() => {
     if (books) {
-      setSearchResults(books)
+      setSearchResults(books);
     }
   }, [books]);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,11 +69,10 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
-      .then((res) => res.json())
-      .then((data) => setBooks(data.items as Book[]))
-      .catch((error) => console.error(error));
-  }, []);
+    if (loaderData) {
+      setBooks(loaderData.items as Book[])
+    }
+  }, [loaderData]);
 
   const handleClick = (screen?: string) => {
     if (screen) {
@@ -71,7 +99,7 @@ const Home = () => {
               handleRemove={() => setSearchTerm("")}
             />
           </div>
-          <RiSearchLine className="block md:hidden" />
+          <RiSearchLine className="block md:hidden" onClick={()=> handleClick("book/book-search") }/>
           <MdOutlineNotificationAdd
             onClick={() => handleClick("notification")}
           />
@@ -79,17 +107,18 @@ const Home = () => {
       </div>
       <div className="m-5">
         <div className="flex-wrap-no mt-[100px] flex gap-6 overflow-x-auto">
-          {searchResults && searchResults.map((item) => {
-            return (
-              <BookCard
-                key={item}
-                bookImage={item?.volumeInfo?.imageLinks?.thumbnail}
-                bookTitle={item?.volumeInfo?.title}
-                rating="4.7"
-                price="$7.99"
-              />
-            );
-          })}
+          {searchResults &&
+            searchResults.map((item) => {
+              return (
+                <BookCard
+                  key={item}
+                  bookImage={item?.volumeInfo?.imageLinks?.thumbnail}
+                  bookTitle={item?.volumeInfo?.title}
+                  rating="4.7"
+                  price="$7.99"
+                />
+              );
+            })}
         </div>
         <div className="mt-7 mb-4 flex items-center justify-between text-2xl font-medium">
           <p>Explore by Genre</p>
@@ -115,17 +144,18 @@ const Home = () => {
           </span>
         </div>
         <div className="flex-wrap-no flex gap-6 overflow-x-auto">
-          {searchResults && searchResults.map((item, index) => {
-            return (
-              <BookCard
-                key={index}
-                bookImage={item?.volumeInfo?.imageLinks?.thumbnail}
-                bookTitle={item?.volumeInfo?.title}
-                rating="4.7"
-                price="$7.99"
-              />
-            );
-          })}
+          {searchResults &&
+            searchResults.map((item, index) => {
+              return (
+                <BookCard
+                  key={index}
+                  bookImage={item?.volumeInfo?.imageLinks?.thumbnail}
+                  bookTitle={item?.volumeInfo?.title}
+                  rating="4.7"
+                  price="$7.99"
+                />
+              );
+            })}
         </div>
         <div className="mt-7 mb-4 flex items-center justify-between text-2xl font-medium">
           <p>On Your Purchased</p>
@@ -134,17 +164,18 @@ const Home = () => {
           </span>
         </div>
         <div className="flex-wrap-no flex gap-6 overflow-x-auto">
-          {searchResults && searchResults.map((book) => {
-            return (
-              <BookCard
-                key={book}
-                bookImage={book?.volumeInfo?.imageLinks?.thumbnail}
-                bookTitle={book?.volumeInfo?.title}
-                rating="4.7"
-                price="$7.99"
-              />
-            );
-          })}
+          {searchResults &&
+            searchResults.map((book) => {
+              return (
+                <BookCard
+                  key={book}
+                  bookImage={book?.volumeInfo?.imageLinks?.thumbnail}
+                  bookTitle={book?.volumeInfo?.title}
+                  rating="4.7"
+                  price="$7.99"
+                />
+              );
+            })}
         </div>
         <div className="mt-7 mb-4 flex items-center justify-between text-2xl font-medium">
           <p>On Your Wishlist</p>
@@ -153,17 +184,18 @@ const Home = () => {
           </span>
         </div>
         <div className="flex-wrap-no flex gap-6 overflow-x-auto">
-          {searchResults && searchResults.map((item, i) => {
-            return (
-              <BookCard
-                key={i}
-                bookImage={item?.volumeInfo?.imageLinks?.thumbnail}
-                bookTitle={item?.volumeInfo?.title}
-                rating="4.7"
-                price="$7.99"
-              />
-            );
-          })}
+          {searchResults &&
+            searchResults.map((item, i) => {
+              return (
+                <BookCard
+                  key={i}
+                  bookImage={item?.volumeInfo?.imageLinks?.thumbnail}
+                  bookTitle={item?.volumeInfo?.title}
+                  rating="4.7"
+                  price="$7.99"
+                />
+              );
+            })}
         </div>
       </div>
     </div>

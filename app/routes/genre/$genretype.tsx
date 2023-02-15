@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import BookCard from "~/components/card";
+import type { LoaderArgs } from "@remix-run/node";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { RiSearchLine } from "react-icons/ri";
 import { BsFillGridFill, BsFillFileTextFill } from "react-icons/bs";
 import { useNavigate } from "@remix-run/react";
@@ -14,9 +16,28 @@ interface Book {
     };
   };
 }
+export const loader = async ({ request }): LoaderArgs => {
+  let errors = {};
+  try {
+    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
+    if (response.status === 200) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch data");
+    }
+  } catch (error) {
+    console.log("error", error);
+    errors.server = error?.message || error;
+    return json({ errors }, { status: 500 });
+  }
+};
 
 const GenrePreference: React.FC = () => {
+  const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  console.log("====>",searchParams.get("genretype"));
   const [column, setShowColumn] = useState<Boolean>(false);
   const [books, setBooks] = useState<Book[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,11 +92,10 @@ const GenrePreference: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
-      .then((res) => res.json())
-      .then((data) => setBooks(data.items))
-      .catch((error) => console.error(error));
-  }, []);
+    if (loaderData) {
+      setBooks(loaderData.items)
+    }
+  }, [loaderData]);
 
   const handleClick = (screen?: String) => {
     if (screen) {

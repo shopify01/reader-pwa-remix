@@ -1,5 +1,5 @@
 import type { ActionArgs, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, Link } from "@remix-run/react";
 import { useState } from "react";
 import { validateEmailUser } from "~/utils.server";
@@ -10,7 +10,7 @@ import BackButton from "~/components/backButton";
 import { BsApple, BsFacebook } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import { signInUser } from "~/utils/auth";
-import { createUserSession } from "~/utils/cookieSession.server";
+import supabaseToken from "~/utils/cookieSession.server";
 
 export async function action({ request }: ActionArgs) {
   try {
@@ -42,15 +42,27 @@ export async function action({ request }: ActionArgs) {
       email,
       password,
     });
+  
     if (data) {
-      const userId = data.session.user.id;
-      const redirectTo = `/home`;
-      return createUserSession(request, userId, redirectTo);
+      return redirect("/home", {
+        headers: {
+          "Set-Cookie":
+            await supabaseToken.serialize(
+              data?.session?.access_token,
+              {
+                expires: new Date(
+                  data?.expires_at
+                ),
+                maxAge: data?.session.expires_in,
+              }
+            ),
+        },
+      });
     }
     throw error;
   } catch (error) {
     console.log("error", error);
-    return json(error, { status: 500 });
+    return json({error}, { status: 500 });
   }
 }
 
@@ -75,7 +87,7 @@ const LoginFormData = [
 ];
 
 export default function LoginPage() {
-  const actionData = useActionData<any>();
+  const actionData = useActionData<typeof action>(); 
   const [formData, setFormData] = useState<any>({
     email: "",
     password: "",
@@ -89,6 +101,16 @@ export default function LoginPage() {
       <BackButton url={"/welcome"} />
       <div className="flex min-h-full flex-col items-center justify-center">
         <div className="h-auto w-full max-w-[30rem] px-3">
+        {actionData?.error && (
+          <div
+            className="mb-4 text-center border border-black-light text-xl text-red-default px-4 py-3 rounded relative"
+            role="alert"
+          >
+            <strong className="font-bold">
+             Incorrect email/password !
+            </strong>          
+          </div>
+        )}
           <p className="text-2xl font-medium">Hello there &#9995;</p>
           <p className="text-xl font-thin">
             Please enter your username / email and password to sign in
@@ -96,7 +118,7 @@ export default function LoginPage() {
           <Form method="post" className="my-3">
             {LoginFormData?.map((item, index) => {
               const { name, type, label, placeholder } = item;
-              const error = actionData?.errors?.[name] || "";
+              const error = actionData?.errors || "";
               const value = formData?.[name];
               return (
                 <Input

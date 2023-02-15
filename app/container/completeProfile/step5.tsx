@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, useNavigate } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import Checkbox from "~/components/checkbox";
 import Input from "~/components/input";
@@ -41,16 +41,26 @@ const SignupFormData = [
   },
 ];
 
-export default function SignUpPage({formData, setFormData, group, age, preference, profileData}) {
+export default function SignUpPage({
+  formData,
+  setFormData,
+  group,
+  age,
+  preference,
+  profileData,
+}) {
+  const navigate = useNavigate();
   const actionData = useActionData<typeof action>();
   const [openModal, setOpenModal] = useState(false);
-  console.log("actionData",actionData);
-  
+
   useEffect(() => {
-    if (actionData?.user?.length) {
+    if (actionData?.res?.id) {
       setOpenModal(true);
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
     }
-  }, [actionData]);
+  }, [actionData,navigate]);
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -105,16 +115,24 @@ export default function SignUpPage({formData, setFormData, group, age, preferenc
               const error = actionData?.formErrors?.[name] || "";
               const value = formData?.[name];
               return (
-                <Input
-                  key={`${name}${index}`}
-                  inputType={type}
-                  name={name}
-                  label={label}
-                  placeholder={placeholder}
-                  value={value}
-                  error={error}
-                  onChange={handleChange}
-                />
+                <>
+                  <Input
+                    key={`${name}${index}`}
+                    inputType={type}
+                    name={name}
+                    label={label}
+                    placeholder={placeholder}
+                    value={value}
+                    error={error}
+                    onChange={handleChange}
+                  />
+                  <input type="hidden" name="gender" value={group} />
+                  <input type="hidden" name="age" value={age} />
+                  <input type="hidden" name="genre" value={preference} />
+                  <input type="hidden" name="fullname" value={profileData?.fullname}/>
+                  <input type="hidden" name="phone" value={profileData?.phone} />
+                  <input type="hidden" name="dob" value={profileData?.dob}/>
+                </>
               );
             })}
             <div className="mb-20 py-4">
