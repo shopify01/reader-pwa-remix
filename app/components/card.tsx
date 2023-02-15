@@ -1,16 +1,17 @@
 import React from "react";
 import { ImStarHalf } from "react-icons/im";
-interface cardProps {
+interface bookCardProps {
   bookTitle: string;
+  bookImage: string;
   rating: string;
   price: string;
   className?: string;
 }
-const Card = ({ bookTitle, rating, price, className }: cardProps) => {
+const BookCard = ({ bookTitle,bookImage, rating, price, className }: bookCardProps) => {
   return (
     <div className="w-full h-[70%] max-w-[fit-content]">
       <img
-        src="https://www.designcap.com/res/template/medium/1f2f83a3c159b6d5fb7fab48b6ff6f55/page0.jpg?v=1602654191"
+        src={bookImage}
         alt="book_image"
         className="mb-4 h-full w-full rounded-lg border-[1px] border-black-light"
       />
@@ -26,4 +27,4 @@ const Card = ({ bookTitle, rating, price, className }: cardProps) => {
     </div>
   );
 };
-export default Card;
+export default BookCard;
