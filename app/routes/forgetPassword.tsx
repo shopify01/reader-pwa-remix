@@ -10,23 +10,24 @@ import { forgetPassword } from "~/utils/auth";
 
 export async function action({ request }: ActionArgs) {
   try {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  if (!validateEmail(email)) {
-    return json(
-      { errors: { email: "Email  is invalid", password: null } },
-      { status: 400 }
-    );
+    const formData = await request.formData();
+    const email = formData.get("email");
+    if (!validateEmail(email)) {
+      return json(
+        { errors: { email: "Email  is invalid", password: null } },
+        { status: 400 }
+      );
+    }
+    const { data, error } = await forgetPassword({ email });
+    if (data) {
+      console.log("data", data);
+      // return redirect("/Otp-verify");
+    }
+    throw error;
+  } catch (error) {
+    console.log("error", error);
+    return json(error, { status: 500 });
   }
-  const { data, error } = await forgetPassword({email});
-  if (data) {
-    return redirect("/Otp-verify");
-  }
-  throw error;
-} catch (error) {
-  console.log("error", error);
-  return json(error, { status: 500 });
-}
 }
 
 export const meta: MetaFunction = () => {
@@ -66,13 +67,16 @@ export default function ForgetPasswordPage() {
               error={actionData?.errors?.["email"] || ""}
               onChange={handleChange}
             />
+            {actionData !== undefined ? (
+              <div className="text-sm text-green-default">Email sent successfull, please check your mail.</div> 
+            ): null}
             <div className="mt-40">
-            <Button
-              label="Continue"
-              maxWidth="max-w-full"
-              fontSize="text-base"
-              type="submit"
-            />
+              <Button
+                label="Continue"
+                maxWidth="max-w-full"
+                fontSize="text-base"
+                type="submit"
+              />
             </div>
           </Form>
         </div>

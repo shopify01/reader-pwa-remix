@@ -30,7 +30,8 @@ module.exports = {
     },
     colors: {
       grey: {
-        light: "#e6e6e6"
+        light: "#e6e6e6",
+        default: "#808080"
       },
       black: {
         default: "#000",
@@ -51,6 +52,9 @@ module.exports = {
       blue: {
         default: "#3333ff",
       },
+      green: {
+        default: "#00b300"
+      }
     },
     extend: {},
   },
