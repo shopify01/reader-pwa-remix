@@ -1,10 +1,25 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-
 import type { User } from "~/models/user.server";
-
+import { createServerClient } from "@supabase/auth-helpers-remix";
+import type { LoaderArgs } from "@remix-run/node";
+import { createClient } from "@supabase/supabase-js";
 const DEFAULT_REDIRECT = "/";
 
+export const supabaseUrl = process.env.SUPABASE_URL as string;
+export const supabaseKey = process.env.SUPABASE_ANON_KEY as string;
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabaseClient = ({ request }: LoaderArgs) => {
+  const response = new Response();
+  return {
+    response,
+    supabaseClientKey: createServerClient(supabaseUrl, supabaseKey, {
+      request,
+      response,
+    }),
+  };
+};
 /**
  * This should be used any time the redirect path is user-provided
  * (Like the query string on our login/signup pages). This avoids
@@ -67,5 +82,19 @@ export function useUser(): User {
 }
 
 export function validateEmail(email: unknown): email is string {
-  return typeof email === "string" && email.length > 3 && email.includes("@");
+  return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+export function validateUser(user: unknown): user is string {
+  return (
+    typeof user === "string" &&
+    /^(?=.{4,20}$)(?:[a-zA-Z\d]+(?:(?:\.|-|_)[a-zA-Z\d])*)+$/.test(user)
+  );
+}
+
+export function validateEmailUser(user: unknown): user is string {
+  return (
+    typeof user === "string" &&
+    (/^(?=.{4,20}$)(?:[a-zA-Z\d]+(?:(?:\.|-|_)[a-zA-Z\d])*)+$/.test(user) ||
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user))
+  );
 }
