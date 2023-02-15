@@ -1,12 +1,14 @@
 import React from "react";
+import type { InputHTMLAttributes } from "react";
 interface cardProps {
     genreTitle: string;
     genereImage: string;
   className?: string;
+  handleClick?: (e: InputHTMLAttributes<HTMLInputElement>) => void;
 }
-const GenreCard = ({ genreTitle, genereImage, className }: cardProps) => {
+const GenreCard = ({ genreTitle, genereImage, className, handleClick = () => {}, }: cardProps) => {
   return (
-    <div className="relative">
+    <div className="relative" onClick={handleClick}>
       <img
         src={genereImage}
         alt="book_image"
