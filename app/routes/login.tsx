@@ -12,12 +12,40 @@ import { FcGoogle } from "react-icons/fc";
 import { signInUser } from "~/utils/auth";
 import supabaseToken from "~/utils/cookieSession.server";
 
-export async function action({ request }: ActionArgs) {
+type FormData = {
+  email: string;
+  password: string;
+};
+
+type LoginFormDataItem = {
+  label: string;
+  type: string;
+  name: string;
+  placeholder: string;
+};
+
+const LoginFormData: LoginFormDataItem[] = [
+  {
+    label: "Username / Email",
+    type: "text",
+    name: "email",
+    placeholder: "Enter Username / Email",
+  },
+  {
+    label: "Password",
+    type: "password",
+    name: "password",
+    placeholder: "Enter password",
+  },
+];
+
+export const action: ActionFunction = async ({ request }):ActionArgs => {
   try {
     const formData = await request.formData();
     const email = formData.get("email");
     const password = formData.get("password");
-    if (!validateEmailUser(email)) {
+
+    if (!validateEmailUser(email as string)) {
       return json(
         { errors: { email: "Email or Username is invalid", password: null } },
         { status: 400 }
@@ -39,60 +67,42 @@ export async function action({ request }: ActionArgs) {
     }
 
     const { data, error } = await signInUser({
-      email,
-      password,
+      email: email as string,
+      password: password as string,
     });
-  
+
     if (data) {
       return redirect("/home", {
         headers: {
           "Set-Cookie":
-            await supabaseToken.serialize(
-              data?.session?.access_token,
-              {
-                expires: new Date(
-                  data?.expires_at
-                ),
-                maxAge: data?.session.expires_in,
-              }
-            ),
+            await supabaseToken.serialize(data?.session?.access_token, {
+              expires: new Date(data?.expires_at),
+              maxAge: data?.session.expires_in,
+            }),
         },
       });
     }
     throw error;
   } catch (error) {
     console.log("error", error);
-    return json({error}, { status: 500 });
+    return json({ error }, { status: 500 });
   }
-}
+};
 
 export const meta: MetaFunction = () => {
   return {
     title: "Login",
   };
 };
-const LoginFormData = [
-  {
-    label: "Username / Email",
-    type: "text",
-    name: "email",
-    placeholder: "Enter Username / Email",
-  },
-  {
-    label: "Password",
-    type: "password",
-    name: "password",
-    placeholder: "Enter password",
-  },
-];
 
-export default function LoginPage() {
-  const actionData = useActionData<typeof action>(); 
-  const [formData, setFormData] = useState<any>({
+const LoginPage: React.FC = () => {
+  const actionData = useActionData<ActionData<typeof action>>();
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
   });
-  const handleChange = (e: any) => {
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -192,3 +202,4 @@ export default function LoginPage() {
     </>
   );
 }
+export default LoginPage;

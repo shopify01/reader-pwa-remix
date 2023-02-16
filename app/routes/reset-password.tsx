@@ -8,7 +8,29 @@ import Button from "~/components/button";
 import BackButton from "~/components/backButton";
 import Modal from "~/components/Modal";
 import { resetPassword } from "~/utils/auth";
-export async function action({ request }: ActionArgs) {
+interface ResetFormDataItem {
+  label: string;
+  type: string;
+  name: string;
+  placeholder: string;
+}
+
+const ResetFormData: ResetFormDataItem[] = [
+  {
+    label: "New Password",
+    type: "password",
+    name: "password",
+    placeholder: "Enter password",
+  },
+  {
+    label: "Confirm New Password",
+    type: "password",
+    name: "cnfpassword",
+    placeholder: "Enter password",
+  },
+];
+
+export async function action({ request }: ActionArgs): Promise<any> {
   try {
     const formData = await request.formData();
     const password = formData.get("password");
@@ -37,7 +59,7 @@ export async function action({ request }: ActionArgs) {
         { status: 400 }
       );
     }
-    const { data, error } = await resetPassword({ password,cnfpassword });
+    const { data, error } = await resetPassword({ password, cnfpassword });
     if (data) {
       console.log(data);
     }
@@ -47,39 +69,30 @@ export async function action({ request }: ActionArgs) {
     return json(error, { status: 500 });
   }
 }
-const ResetFormData = [
-  {
-    label: "New Password",
-    type: "password",
-    name: "password",
-    placeholder: "Enter password",
-  },
-  {
-    label: "Confirm New Password",
-    type: "password",
-    name: "cnfpassword",
-    placeholder: "Enter password",
-  },
-];
 export const meta: MetaFunction = () => {
   return {
     title: "Reset Password",
   };
 };
 
-export default function ResetPasswordPage() {
+const ResetPasswordPage: React.FC = () => {
   const actionData = useActionData<any>();
-  const [openModal, setOpenModal] = useState(false);
-  const [formData, setFormData] = useState<any>({
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [formData, setFormData] = useState<{
+    password: string;
+    cnfpassword: string;
+  }>({
     password: "",
     cnfpassword: "",
   });
+
   useEffect(() => {
-    if (actionData !==undefined ) {
+    if (actionData !== undefined) {
       setOpenModal(true);
     }
   }, [actionData]);
-  const handleChange = (e: any) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -124,7 +137,7 @@ export default function ResetPasswordPage() {
                 />
               );
             })}
-            <div className="py-4 mb-40">
+            <div className="mb-40 py-4">
               <Checkbox label="Remember me" />
             </div>
             <Button
@@ -139,3 +152,4 @@ export default function ResetPasswordPage() {
     </>
   );
 }
+export default ResetPasswordPage;

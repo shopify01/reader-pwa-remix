@@ -16,39 +16,45 @@ interface Book {
     };
   };
 }
+
+interface LoaderData {
+  items: Book[];
+}
+
 export const loader = async ({ request }): LoaderArgs => {
-  let errors = {};
   try {
-    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
+    const response = await fetch(
+      "https://www.googleapis.com/books/v1/volumes?q=search+terms"
+    );
     if (response.status === 200) {
-      const data = await response.json();
+      const data: LoaderData = await response.json();
       return data;
     } else {
       throw new Error("Failed to fetch data");
     }
   } catch (error) {
     console.log("error", error);
-    errors.server = error?.message || error;
-    return json({ errors }, { status: 500 });
+    throw new Error(error?.message || error);
   }
 };
 
 const GenrePreference: React.FC = () => {
-  const loaderData = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData<LoaderData>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  console.log("====>",searchParams.get("genretype"));
-  const [column, setShowColumn] = useState<Boolean>(false);
+  console.log("====>", searchParams.get("genretype"));
+  const [column, setShowColumn] = useState<boolean>(false);
   const [books, setBooks] = useState<Book[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Book[]>();
-  const [isOpen, setIsOpen] = useState<Boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const filterItem = [
     { label: "Short by Name" },
     { label: "Short by Rating" },
     { label: "Short by Price" },
   ];
+
   useEffect(() => {
     if (books) {
       setSearchResults(books);
@@ -64,11 +70,12 @@ const GenrePreference: React.FC = () => {
       )
     );
   };
-  const handleSort = (type) => {
+
+  const handleSort = (type: string) => {
     switch (type) {
       case "title":
         setSearchResults(
-          searchResults.sort((a, b) => {
+          searchResults?.sort((a, b) => {
             if (a.volumeInfo?.title < b.volumeInfo?.title) return -1;
             if (a.volumeInfo?.title > b.volumeInfo?.title) return 1;
             return 0;
@@ -76,28 +83,24 @@ const GenrePreference: React.FC = () => {
         );
         break;
       case "price":
-        setSearchResults(
-          searchResults.sort((a, b) => a.price - b.price)
-        );
+        setSearchResults(searchResults?.sort((a, b) => a.price - b.price));
         break;
       case "rating":
-        setSearchResults(
-          searchResults.sort((a, b) => b.rating - a.rating)
-        );
+        setSearchResults(searchResults?.sort((a, b) => b.rating - a.rating));
         break;
       default:
         break;
-    };
+    }
     setIsOpen(false);
   };
 
   useEffect(() => {
     if (loaderData) {
-      setBooks(loaderData.items)
+      setBooks(loaderData.items);
     }
   }, [loaderData]);
 
-  const handleClick = (screen?: String) => {
+  const handleClick = (screen?: string) => {
     if (screen) {
       navigate(`/${screen}`);
     }
