@@ -42,7 +42,7 @@ const GenrePreference: React.FC = () => {
   const loaderData = useLoaderData<LoaderData>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  console.log("====>", searchParams.get("genretype"));
+  const genreType = searchParams.get("genretype");
   const [column, setShowColumn] = useState<boolean>(false);
   const [books, setBooks] = useState<Book[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -110,7 +110,7 @@ const GenrePreference: React.FC = () => {
       <div className="fixed top-0 left-0 flex h-[80px] w-full justify-between bg-white-default p-5 shadow-md">
         <div className="flex items-center text-2xl font-medium">
           <BackButton ml="ml-0" url={"/genre"} />
-          <p>GenreType</p>
+          <p>{genreType}</p>
         </div>
         <div className="flex items-center gap-8 text-3xl">
           <div className="hidden md:block">
