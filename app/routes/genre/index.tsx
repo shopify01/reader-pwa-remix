@@ -8,7 +8,7 @@ import SearchBar from "~/components/searchbar";
 
 const Genre: React.FC = () => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<String>("");
   const [searchResults, setSearchResults] = useState<GenreData[]>(GenreData);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

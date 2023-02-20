@@ -35,11 +35,11 @@ export const loader = async ({ request }): LoaderArgs => {
     return json({ errors }, { status: 500 });
   }
 };
-const Discover = () => {
+const Discover: React.FC = () => {
   const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [books, setBooks] = useState<Book[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<String>("");
   const [searchResults, setSearchResults] = useState<Book[]>();
 
   useEffect(() => {
@@ -62,12 +62,6 @@ const Discover = () => {
       setBooks(loaderData.items)
     }
   }, [loaderData]);
-
-//   const handleClick = (screen?: string) => {
-//     if (screen) {
-//       navigate(`/${screen}`);
-//     }
-//   };
 
   return (
     <div>

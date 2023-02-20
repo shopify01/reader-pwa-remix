@@ -3,19 +3,26 @@ import { RxCross2 } from "react-icons/rx";
 import Button from "~/components/button";
 import { GenreData, Language, Rating, SortArr, Age } from "~/components/data";
 import RadioButton from "~/components/radioButton";
-const AddFilter = () => {
-    const [filteredData, setFilteredData] = useState<Array>([]);
-  const filterBy = [
-    { label: "Sort" },
-    { label: "Price" },
-    { label: "Rating" },
-    { label: "Genre" },
-    { label: "Language" },
-    { label: "Age" },
+type FilterOption = {
+  label: string;
+  };
+  
+  const AddFilter: React.FC = () => {
+  const [filteredData, setFilteredData] = useState<Array>([]);
+  const filterBy: FilterOption[] = [
+  { label: "Sort" },
+  { label: "Price" },
+  { label: "Rating" },
+  { label: "Genre" },
+  { label: "Language" },
+  { label: "Age" },
   ];
-    const handleSort = () => {
+  
+  const handleSort: React.FC = () => {
 
-    };
+  };
+  
+  
   return (
     <div className="mt-6 flex flex-col items-center justify-center">
       <div className="h-auto w-full max-w-[30rem] px-4">

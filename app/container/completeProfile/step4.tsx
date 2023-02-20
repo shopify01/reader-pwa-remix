@@ -123,13 +123,6 @@ export default function StepFour({ formData, setFormData, handleComponent }) {
                 />
               );
             })}
-            {/* <Select
-              name="country"
-              label="Country"
-              placeholder="Select Country"
-              value={formData.country}
-              onChange={handleChange}
-            /> */}
             <div className="mt-20">
               <Button
                 label="Continue"

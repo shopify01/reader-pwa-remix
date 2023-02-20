@@ -46,7 +46,7 @@ export const meta: MetaFunction = () => {
   };
 };
 
-const Home = () => {
+const Home : React.FC = () => {
   const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [books, setBooks] = useState<Book[]>([]);
