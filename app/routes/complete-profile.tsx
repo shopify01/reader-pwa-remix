@@ -9,7 +9,26 @@ import SignUpPage from "../container/completeProfile/step5";
 import { validateConfirmPassword, validateEmail, validatePassword,validateUsername } from "~/Validation/validation";
 import { createUser } from "~/utils/auth";
 
-export async function action({ request }: ActionArgs) {
+type FormData = {
+  fullname: string;
+  phone: string;
+  dob: string;
+  country?: string;
+};
+
+type SignUpData = {
+  username: string;
+  email: string;
+  password: string;
+  cpassword: string;
+};
+
+type Data = {
+  id: number;
+  name: string;
+};
+
+export async function action({ request }: ActionArgs): Promise<object> {
   try {
     const form = await request.formData();
     const username = form.get("username");
@@ -29,13 +48,25 @@ export async function action({ request }: ActionArgs) {
       password: validatePassword(password),
       cpassword: validateConfirmPassword(password, cpassword),
     };
-    if (Object.values(formErrors).some(Boolean))
+    if (Object.values(formErrors).some(Boolean)) {
       return {
         formErrors,
       };
-    const fields = {username, email, password, gender, age, genre, fullname, phone, dob}
+    }
+
+    const fields = {
+      username,
+      email,
+      password,
+      gender,
+      age,
+      genre,
+      fullname,
+      phone,
+      dob,
+    };
     const { user, error } = await createUser(fields);
-    
+
     if (user) {
       return json({ res: user }, { status: 200 });
     }
@@ -50,59 +81,73 @@ const CompleteProfile: React.FC = () => {
   const [gender, setGender] = useState<string>("");
   const [ageGroup, setAgeGroup] = useState<null>(null);
   const [genere, setGenere] = useState<Data[]>([]);
-  const [countData, setCountData] = useState(1);
-  
-  const [formData, setFormData] = useState<{
-    fullname: string;
-    phone: string;
-    dob: string;
-    country: string;
-  }>({
+  const [countData, setCountData] = useState<number>(1);
+  const [formData, setFormData] = useState<FormData>({
     fullname: "",
     phone: "",
     dob: "",
   });
-  const [signUpData, setSignupData] = useState<{
-    username: string;
-    email: string;
-    password: string;
-    cpassword: string;
-  }>({
+  const [signUpData, setSignupData] = useState<SignUpData>({
     username: "",
     email: "",
     password: "",
     cpassword: "",
   });
+
   const handleComponent = () => {
-    setCountData(countData+1)
-  }
+    setCountData(countData + 1);
+  };
 
   return (
-    <> 
-      {countData === 1 &&
+    <>
+      {countData === 1 && (
         <div>
-          <StepOne handleComponent={handleComponent} gender={gender} setGender={setGender} />
-        </div>}
-      {countData === 2  && (
-        <div>
-          <StepTwo handleComponent={handleComponent} ageGroup={ageGroup} setAgeGroup={setAgeGroup}/>
+          <StepOne
+            handleComponent={handleComponent}
+            gender={gender}
+            setGender={setGender}
+          />
         </div>
       )}
-      { countData === 3  && 
+      {countData === 2 && (
         <div>
-          <StepThree handleComponent={handleComponent} genere={genere} setGenere={setGenere} />
+          <StepTwo
+            handleComponent={handleComponent}
+            ageGroup={ageGroup}
+            setAgeGroup={setAgeGroup}
+          />
         </div>
-      }
-      {countData === 4  && 
+      )}
+      {countData === 3 && (
         <div>
-          <StepFour handleComponent={handleComponent} formData={formData} setFormData={setFormData} />
+          <StepThree
+            handleComponent={handleComponent}
+            genere={genere}
+            setGenere={setGenere}
+          />
         </div>
-      }
-      {countData === 5  && 
+      )}
+      {countData === 4 && (
         <div>
-          <SignUpPage formData={signUpData} setFormData={setSignupData} group={gender} age={ageGroup} preference={genere} profileData={formData}/>
+          <StepFour
+            handleComponent={handleComponent}
+            formData={formData}
+            setFormData={setFormData}
+          />
         </div>
-      }
+      )}
+      {countData === 5 && (
+        <div>
+          <SignUpPage
+            formData={signUpData}
+            setFormData={setSignupData}
+            group={gender}
+            age={ageGroup}
+            preference={genere}
+            profileData={formData}
+          />
+        </div>
+      )}
     </>
   );
 };

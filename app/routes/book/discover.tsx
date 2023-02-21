@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { json } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
 import BookImage from "~/../assets/book.jpg";
 import BookCard from "~/components/card";
@@ -6,6 +7,8 @@ import { RiSearchLine } from "react-icons/ri";
 import { BsArrowRight } from "react-icons/bs";
 import { useNavigate, useLoaderData } from "@remix-run/react";
 import SearchBar from "~/components/searchbar";
+import { isAuthenticated } from "~/utils/auth";
+import Footer from "~/components/footer";
 
 interface Book {
   volumeInfo: {
@@ -22,7 +25,9 @@ export const loader = async ({ request }): LoaderArgs => {
     if (!userAuthenticated) {
       return redirect("/login");
     }
-    const response = await fetch("https://www.googleapis.com/books/v1/volumes?q=search+terms")
+    const response = await fetch(
+      "https://www.googleapis.com/books/v1/volumes?q=search+terms"
+    );
     if (response.status === 200) {
       const data = await response.json();
       return data;
@@ -35,11 +40,11 @@ export const loader = async ({ request }): LoaderArgs => {
     return json({ errors }, { status: 500 });
   }
 };
-const Discover = () => {
+const Discover: React.FC = () => {
   const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [books, setBooks] = useState<Book[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<String>("");
   const [searchResults, setSearchResults] = useState<Book[]>();
 
   useEffect(() => {
@@ -59,19 +64,17 @@ const Discover = () => {
 
   useEffect(() => {
     if (loaderData) {
-      setBooks(loaderData.items)
+      setBooks(loaderData.items);
     }
   }, [loaderData]);
-
-//   const handleClick = (screen?: string) => {
-//     if (screen) {
-//       navigate(`/${screen}`);
-//     }
-//   };
-
+  const handleClick = (screen?: string) => {
+    if (screen) {
+      navigate(`/${screen}`);
+    }
+  };
   return (
     <div>
-      <div className="header fixed top-0 left-0 flex h-[80px] w-full justify-between bg-white-default p-5 shadow-md">
+      <div className="header fixed top-0 left-0 z-10 flex h-[80px] w-full justify-between bg-white-default p-5 shadow-md">
         <div className="flex items-center gap-6 text-3xl font-medium">
           <img
             src={BookImage}
@@ -88,7 +91,10 @@ const Discover = () => {
               handleRemove={() => setSearchTerm("")}
             />
           </div>
-          <RiSearchLine className="block md:hidden" />
+          <RiSearchLine
+            className="block md:hidden"
+            onClick={() => handleClick("book/book-search")}
+          />
         </div>
       </div>
       <div className="m-5 mt-[100px]">
@@ -173,6 +179,7 @@ const Discover = () => {
             })}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -7,6 +7,7 @@ interface bookCardProps {
   price: string;
   className?: string;
   showInColumn?: boolean;
+  handleClick?: () => void;
 }
 const BookCard = ({
   bookTitle,
@@ -15,6 +16,7 @@ const BookCard = ({
   price,
   className,
   showInColumn,
+  handleClick = () => {},
 }: bookCardProps) => {
   return (
     <div>
@@ -24,6 +26,7 @@ const BookCard = ({
             src={bookImage}
             alt="book_image"
             className="mb-4 h-[240px] w-[170px] max-w-[170px] rounded-lg border-[1px] border-black-light"
+            onClick={handleClick}
           />
           <p className="text-black-dark mb-2 text-xl font-medium">
             {bookTitle.length > 20

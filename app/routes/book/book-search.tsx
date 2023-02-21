@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import BookCard from "~/components/card";
 import type { LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { useNavigate, useLoaderData } from "@remix-run/react";
 import { BsFillGridFill, BsFillFileTextFill } from "react-icons/bs";
 import BackButton from "~/components/backButton";
 import SearchBar from "~/components/searchbar";
 import { RiFilter3Line } from "react-icons/ri";
+import { isAuthenticated } from "~/utils/auth";
 
 interface Book {
   volumeInfo: {
@@ -74,7 +76,7 @@ const SearchPage: React.FC = () => {
   return (
     <div>
       <div className="fixed top-0 left-0 flex h-[80px] w-full items-center justify-between bg-white-default p-5 shadow-md">
-        <BackButton ml="ml-0" url={"/genre"} />
+        <BackButton ml="ml-0" url={"/home"} />
         <div className="flex items-center gap-2 text-3xl">
           <SearchBar
             value={searchTerm}
