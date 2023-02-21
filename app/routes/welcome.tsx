@@ -3,7 +3,7 @@ import welcomeImage from "~/../assets/ebook_Welcome.jpg";
 import { FcGoogle } from "react-icons/fc";
 import Button from "~/components/button";
 
-export default function Index() {
+const Index: React.FC = () => {
   const navigate = useNavigate();
   const handleClick = (screen?: String) => {
     if (screen) {
@@ -53,3 +53,4 @@ export default function Index() {
     </main>
   );
 }
+export default Index;

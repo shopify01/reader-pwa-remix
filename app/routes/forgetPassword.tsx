@@ -1,5 +1,6 @@
 import type { ActionArgs, MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type { ChangeEvent } from "react";
 import { Form, useActionData } from "@remix-run/react";
 import { useState } from "react";
 import { validateEmail } from "~/utils.server";
@@ -7,28 +8,31 @@ import Input from "~/components/input";
 import Button from "~/components/button";
 import BackButton from "~/components/backButton";
 import { forgetPassword } from "~/utils/auth";
+interface FormData {
+  email: string;
+}
 
-export async function action({ request }: ActionArgs) {
+const action: ActionFunction = async ({ request }): ActionArgs => {
   try {
     const formData = await request.formData();
-    const email = formData.get("email");
+    const email = formData.get("email") as string;
     if (!validateEmail(email)) {
       return json(
-        { errors: { email: "Email  is invalid", password: null } },
+        { errors: { email: "Email is invalid", password: null } },
         { status: 400 }
       );
     }
     const { data, error } = await forgetPassword({ email });
     if (data) {
       console.log("data", data);
-      // return redirect("/Otp-verify");
+      return data;
     }
     throw error;
   } catch (error) {
     console.log("error", error);
     return json(error, { status: 500 });
   }
-}
+};
 
 export const meta: MetaFunction = () => {
   return {
@@ -36,14 +40,13 @@ export const meta: MetaFunction = () => {
   };
 };
 
-export default function ForgetPasswordPage() {
-  const actionData = useActionData<any>();
-  const [formData, setFormData] = useState<{
-    email: string;
-  }>({
+const ForgetPasswordPage: React.FC = () => {
+  const actionData = useActionData<typeof action>();
+  const [formData, setFormData] = useState<FormData>({
     email: "",
   });
-  const handleChange = (e: any) => {
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -52,16 +55,14 @@ export default function ForgetPasswordPage() {
       <BackButton url={"/login"} />
       <div className="flex min-h-full flex-col items-center justify-center">
         <div className="h-auto w-full max-w-[30rem] px-3">
-        {actionData?.error && (
-          <div
-            className="mb-4 text-center border border-black-light text-xl text-red-default px-4 py-3 rounded relative"
-            role="alert"
-          >
-            <strong className="font-bold">
-             Incorrect email !
-            </strong>          
-          </div>
-        )}
+          {actionData?.error && (
+            <div
+              className="relative mb-4 rounded border border-black-light px-4 py-3 text-center text-xl text-red-default"
+              role="alert"
+            >
+              <strong className="font-bold">Incorrect email !</strong>
+            </div>
+          )}
           <p className="text-2xl font-medium">Forget Password &#128273;</p>
           <p className="text-xl font-thin">
             Please Enter Your email address. we can send an Otp Code for
@@ -78,8 +79,10 @@ export default function ForgetPasswordPage() {
               onChange={handleChange}
             />
             {actionData !== undefined ? (
-              <div className="text-sm text-green-default">Email sent successfull, please check your mail.</div> 
-            ): null}
+              <div className="text-sm text-green-default">
+                Email sent successfull, please check your mail.
+              </div>
+            ) : null}
             <div className="mt-40">
               <Button
                 label="Continue"
@@ -93,4 +96,5 @@ export default function ForgetPasswordPage() {
       </div>
     </>
   );
-}
+};
+export default ForgetPasswordPage;

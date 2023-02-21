@@ -3,7 +3,7 @@ import BookImage from "~/../assets/book.jpg";
 import Loader from "~/components/loader";
 import { useNavigate } from "@remix-run/react";
 
-export default function Index() {
+const Index: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,3 +32,4 @@ export default function Index() {
     </main>
   );
 }
+export default Index;

@@ -7,10 +7,6 @@ import Button from "~/components/button";
 import BackButton from "~/components/backButton";
 import OtpInput from "react-otp-input";
 export async function action({ request }: ActionArgs) {
-  //   const formData = await request.formData();
-  //   const otp = formData.get("otp");
-  //   console.log("data========>", otp);
-
   return redirect("/reset-password");
 }
 

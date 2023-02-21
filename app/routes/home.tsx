@@ -11,6 +11,7 @@ import GenreCard from "~/components/genreCard";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { isAuthenticated } from "~/utils/auth";
 import SearchBar from "~/components/searchbar";
+import Footer from "~/components/footer";
 
 interface Book {
   volumeInfo: {
@@ -46,7 +47,7 @@ export const meta: MetaFunction = () => {
   };
 };
 
-const Home = () => {
+const Home : React.FC = () => {
   const loaderData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const [books, setBooks] = useState<Book[]>([]);
@@ -82,7 +83,7 @@ const Home = () => {
 
   return (
     <div>
-      <div className="header fixed top-0 left-0 flex h-[80px] w-full justify-between bg-white-default p-5 shadow-md">
+      <div className="header z-10 fixed top-0 left-0 flex h-[80px] w-full justify-between bg-white-default p-5 shadow-md">
         <div className="flex items-center gap-6 text-3xl font-medium">
           <img
             src={BookImage}
@@ -116,6 +117,7 @@ const Home = () => {
                   bookTitle={item?.volumeInfo?.title}
                   rating="4.7"
                   price="$7.99"
+                  handleClick={()=> handleClick(`book/search?title=${item?.volumeInfo?.title}`)}
                 />
               );
             })}
@@ -160,7 +162,7 @@ const Home = () => {
         <div className="mt-7 mb-4 flex items-center justify-between text-2xl font-medium">
           <p>On Your Purchased</p>
           <span className="text-orange-dark">
-            <BsArrowRight />
+            <BsArrowRight onClick={() => handleClick("book/purchased-ebook")}/>
           </span>
         </div>
         <div className="flex-wrap-no flex gap-6 overflow-x-auto">
@@ -180,7 +182,7 @@ const Home = () => {
         <div className="mt-7 mb-4 flex items-center justify-between text-2xl font-medium">
           <p>On Your Wishlist</p>
           <span className="text-orange-dark">
-            <BsArrowRight />
+            <BsArrowRight onClick={() => handleClick("book/wishlist-ebook")}/>
           </span>
         </div>
         <div className="flex-wrap-no flex gap-6 overflow-x-auto">
@@ -198,6 +200,7 @@ const Home = () => {
             })}
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

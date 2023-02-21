@@ -8,7 +8,7 @@ import SearchBar from "~/components/searchbar";
 
 const Genre: React.FC = () => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<String>("");
   const [searchResults, setSearchResults] = useState<GenreData[]>(GenreData);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +51,7 @@ const Genre: React.FC = () => {
                 key={item.label}
                 genreTitle={item.label}
                 genereImage={item.image}
-                handleClick={() => handleClick(`genre/genretype=${item?.label}`)}
+                handleClick={() => handleClick(`genre/search?genretype=${item?.label}`)}
               />
             );
           })}

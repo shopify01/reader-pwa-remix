@@ -5,16 +5,24 @@ interface bookCardProps {
   bookImage: string;
   rating: string;
   price: string;
+  author?: string;
+  category?: string;
+  publishedDate?: string;
   className?: string;
   showInColumn?: boolean;
+  handleClick?: () => void;
 }
 const BookCard = ({
   bookTitle,
   bookImage,
   rating,
   price,
+  author,
+  category,
+  publishedDate,
   className,
   showInColumn,
+  handleClick = () => {},
 }: bookCardProps) => {
   return (
     <div>
@@ -24,6 +32,7 @@ const BookCard = ({
             src={bookImage}
             alt="book_image"
             className="mb-4 h-[240px] w-[170px] max-w-[170px] rounded-lg border-[1px] border-black-light"
+            onClick={handleClick}
           />
           <p className="text-black-dark mb-2 text-xl font-medium">
             {bookTitle.length > 20
@@ -32,7 +41,6 @@ const BookCard = ({
           </p>
           <div className="flex gap-5 font-medium text-grey-default">
             <span className="flex gap-2 ">
-              {" "}
               <ImStarHalf className="mt-0.5" />
               {rating}
             </span>
@@ -50,14 +58,21 @@ const BookCard = ({
             <p className="text-black-dark mb-4 text-xl font-medium">
               {bookTitle}
             </p>
-            <div className="font-medium text-grey-default">
-              <span className="mb-4 flex gap-2">
-                {" "}
-                <ImStarHalf className="mt-0.5" />
-                {rating}
-              </span>
-              <span>{price}</span>
-            </div>
+            {author && category && publishedDate ? (
+              <div className="font-medium text-grey-default">
+                <p className="mb-4 flex gap-2 text-xl text-orange-dark font-normal">{author}</p>
+                <p className="font-normal mb-3">Released on. {publishedDate}</p>
+                <span className="font-normal text-sm p-2 bg-grey-light rounded-lg">{category}</span>
+              </div>
+            ) : (
+              <div className="font-medium text-grey-default">
+                <span className="mb-4 flex gap-2">
+                  <ImStarHalf className="mt-0.5" />
+                  {rating}
+                </span>
+                <span>{price}</span>
+              </div>
+            )}
           </div>
         </div>
       )}

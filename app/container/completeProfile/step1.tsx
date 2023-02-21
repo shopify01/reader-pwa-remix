@@ -23,11 +23,6 @@ const Data = [
 ];
 
 export default function StepOne({ gender, setGender, handleComponent }) {
-    // useEffect(() => {
-    //   if (gender) {
-    //    localStorage.setItem("gender",gender)
-    //  }
-    // }, [gender]);
   
   return (
     <>
