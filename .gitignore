@@ -12,3 +12,5 @@ yarn.lock
 /prisma/data.db-journal
 
 /app/styles/tailwind.css
+temp_auto_push.bat
+temp_interactive_push.bat
